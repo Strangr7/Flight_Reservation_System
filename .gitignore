@@ -1,0 +1,17 @@
+# Ignore build files
+/build/
+/target/
+/logs/
+*.log
+
+# Ignore IDE settings
+.classpath
+.project
+.settings/
+
+# Ignore compiled files
+*.class
+*.war
+
+# Ignore sensitive files
+.env
