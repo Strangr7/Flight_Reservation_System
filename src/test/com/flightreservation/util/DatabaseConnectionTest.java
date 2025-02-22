@@ -1,11 +1,13 @@
 package com.flightreservation.util;
 
-import static org.junit.Assert.assertNotNull;
+
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +20,7 @@ public class DatabaseConnectionTest {
 		try (Connection conn = DatabaseConnection.getConnection()) {
 			// Assert that the connection is not null, meaning the connection to the
 			// database was successful
-			assertNotNull("Database connection should not be null", conn);
+			 assertNotNull(conn, "Database connection should not be null");
 
 			// Log success message if the connection is established
 			logger.info("SUCCESS: Database connection is established!");

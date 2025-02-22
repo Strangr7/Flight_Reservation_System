@@ -16,7 +16,7 @@ public class DatabaseConnection {
 	private static final Logger logger = LoggerFactory.getLogger(DatabaseConnection.class);
 	private static HikariDataSource dataSource; // DataSource for HikariCP connection pool
 
-	// Static block to initialize the HikariCP DataSource
+	// Static block to initialize the HikariCP DataSource/
 	static {
 		try {
 			// Load environment variables from .env file
