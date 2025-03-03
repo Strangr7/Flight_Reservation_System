@@ -1,111 +1,101 @@
 package com.flightreservation.util;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.zaxxer.hikari.HikariDataSource;
-import com.zaxxer.hikari.HikariConfig;
-
 public class DatabaseConnection {
 	private static final Logger logger = LoggerFactory.getLogger(DatabaseConnection.class);
-	private static HikariDataSource dataSource; // DataSource for HikariCP connection pool
+	private static String URL;
+	private static String USER;
+	private static String PASSWORD;
 
-	// Static block to initialize the HikariCP DataSource/
-	static {
+	private DatabaseConnection() {
+		// Private constructor to prevent instantiation
+	}
+
+	public static synchronized void initialize() {
+		if (URL != null && USER != null && PASSWORD != null) {
+			return; // Already initialized
+		}
+
 		try {
-			// Load environment variables from .env file
-			Map<String, String> env = loadEnv(".env");
+			// Load environment variables
+			String envFilePath = System.getProperty("env.file", ".env");
+			logger.info("Looking for .env at: " + new File(envFilePath).getAbsolutePath());
+			Map<String, String> env = EnvLoader.loadEnv(envFilePath);
 
-			// Get the database URL, username, and password from environment variables
-			String URL = env.getOrDefault("DB_URL", "").trim();
-			String USER = env.getOrDefault("DB_USERNAME", "").trim();
-			String PASSWORD = env.getOrDefault("DB_PASSWORD", "").trim();
+			URL = env.getOrDefault("DB_URL", "").trim();
+			USER = env.getOrDefault("DB_USERNAME", "").trim();
+			PASSWORD = env.getOrDefault("DB_PASSWORD", "").trim();
+			logger.info("Loaded DB_URL='{}', DB_USERNAME='{}', DB_PASSWORD='{}'", URL, USER, PASSWORD);
 
-			// Ensure that the necessary database credentials are present
 			if (URL.isEmpty() || USER.isEmpty() || PASSWORD.isEmpty()) {
-				throw new IllegalStateException("ERROR: Missing database credentials in .env file!");
+				logger.error("Missing database credentials! Check .env file.");
+				throw new IllegalStateException("Database credentials not provided in .env file.");
 			}
 
-			// Log the loaded credentials (without the password)
-			logger.info("Loaded database URL: {}", URL);
-			logger.info("Loaded database user: {}", USER);
+			logger.info("Loaded database configuration successfully.");
 
-			// Set up HikariCP configuration
-			HikariConfig config = new HikariConfig();
-			config.setJdbcUrl(URL); // Set the JDBC URL
-			config.setUsername(USER); // Set the database username
-			config.setPassword(PASSWORD); // Set the database password
-			config.setMaximumPoolSize(10); // Set maximum pool size for connections
-
-			// Initialize the DataSource with the configuration
-			dataSource = new HikariDataSource(config);
-			logger.info("HikariCP DataSource initialized successfully.");
+			// Test the connection
+			if (!testDatabaseConnection()) {
+				throw new SQLException("Database connection test failed.");
+			}
 
 		} catch (IOException e) {
-			// Log any issues encountered while reading the .env file
-			logger.error("ERROR: Failed to read .env file", e);
-		} catch (IllegalStateException e) {
-			// Log missing or incorrect credentials
-			logger.error(e.getMessage());
-		}
-	}
-
-	// Method to get a connection from the HikariCP connection pool
-	public static Connection getConnection() throws SQLException {
-		logger.info("Connecting to database...");
-		return dataSource.getConnection(); // Return a connection from the pool
-	}
-
-	// Optional: Method to shut down the HikariCP connection pool when the
-	// application ends
-	public static void shutdown() {
-		if (dataSource != null) {
-			dataSource.close(); // Close the connection pool
-			logger.info("HikariCP DataSource shut down.");
-		}
-	}
-
-	// Helper method to load environment variables from a .env file
-	private static Map<String, String> loadEnv(String filename) throws IOException {
-		Map<String, String> envMap = new HashMap<>();
-		File envFile = new File(filename);
-
-		// If the .env file doesn't exist, fall back to system environment variables
-		if (!envFile.exists()) {
-			logger.warn("WARNING: .env file not found. Using default system environment variables.");
-			return System.getenv();
-		}
-
-		// Read the .env file and load key-value pairs into a map
-		try (BufferedReader br = new BufferedReader(new FileReader(envFile))) {
-			String line;
-			while ((line = br.readLine()) != null) {
-				if (!line.startsWith("#") && line.contains("=")) {
-					String[] parts = line.split("=", 2); // Split by "=" to get key-value pairs
-					envMap.put(parts[0].trim(), parts[1].trim()); // Trim the values and add to map
-				}
-			}
-		}
-		return envMap; // Return the loaded environment variables
-	}
-
-	// Main method for testing the connection and shutting down the pool
-	public static void main(String[] args) {
-		try (Connection conn = getConnection()) {
-			// If the connection is established successfully, log success
-			logger.info("SUCCESS: Database connection established!");
+			logger.error("Failed to read .env file!", e);
+			throw new IllegalStateException("Error loading environment variables from .env", e);
 		} catch (SQLException e) {
-			// If there's an issue with the database connection, log the error
-			logger.error("❌ ERROR: Database connection failed!", e);
-		} finally {
-			// Always shut down the pool when done
-			shutdown();
+			logger.error("Database connection test failed!", e);
+			throw new IllegalStateException("Cannot establish database connection.", e);
 		}
+	}
+
+	public static Connection getConnection() throws SQLException {
+		if (URL == null || USER == null || PASSWORD == null) {
+			initialize();
+		}
+		logger.info("Retrieving a database connection...");
+		return DriverManager.getConnection(URL, USER, PASSWORD);
+	}
+
+	private static boolean testDatabaseConnection() {
+		try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {
+			boolean isValid = conn.isValid(2);
+			if (isValid) {
+				logger.info("Database connection test successful!");
+			} else {
+				logger.error("Invalid database connection.");
+			}
+			return isValid;
+		} catch (SQLException e) {
+			logger.error("Error testing database connection!", e);
+			return false;
+		}
+	}
+
+	// Optional: Getter for Hibernate configuration
+	public static String getUrl() {
+		if (URL == null)
+			initialize();
+		return URL;
+	}
+
+	public static String getUsername() {
+		if (USER == null)
+			initialize();
+		return USER;
+	}
+
+	public static String getPassword() {
+		if (PASSWORD == null)
+			initialize();
+		return PASSWORD;
 	}
 }

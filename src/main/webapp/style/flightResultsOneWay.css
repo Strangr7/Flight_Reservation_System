@@ -1,0 +1,223 @@
+@charset "UTF-8";
+
+
+
+
+body {
+	font-family: 'Poppins', sans-serif;
+	background: #f5f7fa;
+	color: #333;
+}
+
+#loading {
+	display: block;
+	text-align: center;
+	padding: 20px;
+}
+
+.spinner-border {
+	width: 3rem;
+	height: 3rem;
+}
+
+.container {
+	max-width: 1200px;
+	margin-top: 40px;
+	padding: 20px;
+}
+
+.header-title {
+	font-size: 2.5rem; /* Increased size for better visibility */
+	font-weight: 600;
+	color: #d32027; /* Air India red */
+	margin-bottom: 15px;
+	text-align: center; /* Center align the title */
+}
+
+.header-subtitle {
+	font-size: 1.1rem; /* Slightly increased */
+	color: #666;
+	margin-bottom: 30px;
+	text-align: center; /* Center align the subtitle */
+}
+
+.flight-card {
+	border: none;
+	border-radius: 12px;
+	background: #ffffff;
+	padding: 20px; /* Increased padding for better content spacing */
+	margin-bottom: 20px; /* Increased margin for separation */
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+	/* Stronger shadow for depth */
+	transition: transform 0.2s ease, box-shadow 0.2s ease;
+	/* Added shadow transition */
+}
+
+
+
+.airline-logo img {
+	max-height: 100px;
+	border-radius: 5px;
+	transition: transform 0.2s ease;
+}
+
+.flight-time {
+	font-size: 1.2rem; /* Slightly increased */
+	font-weight: 600;
+	color: #d32027; /* Air India red */
+	margin-bottom: 5px;
+}
+
+.stop-info {
+	color: #f44336;
+	font-weight: 500;
+	font-size: 0.85rem;
+	margin-left: 8px;
+}
+
+.flight-details {
+	font-size: 0.9rem;
+	color: #666;
+	margin: 0;
+}
+
+.price {
+	font-size: 1.3rem; /* Slightly increased for emphasis */
+	font-weight: 600;
+	color: #f44336;
+	margin: 0;
+}
+
+.lowest-price {
+	font-size: 0.85rem; /* Slightly adjusted */
+	color: #f44336;
+	font-weight: 400;
+}
+
+.toggle-details {
+	color: #d32027; /* Air India red */
+	text-decoration: none;
+	font-weight: 500;
+	font-size: 0.9rem;
+	transition: color 0.3s ease;
+}
+
+.toggle-details:hover {
+	color: #b1191f; /* Darker shade of red */
+}
+
+.toggle-details .arrow {
+	font-size: 0.7rem;
+	margin-right: 5px;
+	transition: transform 0.3s ease;
+}
+
+.flight-details-dropdown {
+	display: none;
+	background: #ffffff;
+	border-radius: 12px;
+	padding: 15px;
+	margin-top: 10px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+	border: 1px solid #e0e0e0;
+	opacity: 0;
+	max-height: 0;
+	overflow: hidden;
+	 transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+.flight-details-dropdown.active {
+	display: block;
+	max-height: 300px; /* Adjust based on content height */
+	opacity: 1;
+}
+
+.details-content {
+	font-size: 0.9rem;
+	color: #333;
+}
+
+.baggage-info::before {
+    content: "🧳 "; /* Luggage emoji or Font Awesome icon */
+    margin-right: 5px;
+}
+.seats-info::before {
+    content: "💺 "; /* Seat emoji */
+    margin-right: 5px;
+}
+.fare-option {
+	border: 1px solid #ddd;
+	border-radius: 5px;
+	padding: 15px;
+	margin-bottom: 15px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+	transition: transform 0.2s ease;
+	background: #f9f9f9;
+}
+
+.fare-option:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.select-btn {
+	background: #ffffff;
+	border: 2px solid #d32027; /* Slightly thicker border */
+	color: #d32027;
+	border-radius: 20px;
+	padding: 10px 20px; /* Increased padding for better touch target */
+	font-size: 1rem; /* Increased font size */
+	font-weight: 500;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	margin-top: 10px;
+}
+
+.select-btn:hover {
+	background: #d32027;
+	color: #ffffff;
+}
+
+.alert {
+	border-radius: 10px;
+	background: #fff3e0;
+	color: #e65100;
+	font-weight: 500;
+	padding: 10px; /* Added padding for better spacing */
+}
+.flight-card.card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    padding: 15px;
+    transition: transform 0.2s ease;
+}
+
+
+
+@media ( max-width : 768px) {
+	.header-title {
+		font-size: 2rem; /* Responsive font size */
+	}
+	.flight-card .row {
+		flex-direction: column;
+		text-align: center;
+	}
+	.airline-logo, .flight-time, .flight-details, .price, .toggle-details {
+		margin-bottom: 10px;
+	}
+	.flight-details-dropdown .row {
+		flex-direction: column;
+	}
+	.fare-option {
+		width: 100%;
+		margin-bottom: 10px;
+	}
+	.filters-sidebar {
+        display: none; /* Collapse on mobile, can add toggle later */
+    }
+    .content-with-sidebar {
+        flex-direction: column;
+    }
+}

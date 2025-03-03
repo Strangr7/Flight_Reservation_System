@@ -1,0 +1,215 @@
+/* Reset default margins, padding, and box-sizing */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f5f7fa; /* Light blue-gray background */
+    line-height: 1.6;
+    color: #333;
+}
+
+/* Loading Spinner Styling */
+#loading {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f5f7fa;
+}
+
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+}
+
+#loading p {
+    margin-top: 10px;
+    color: #666;
+    font-size: 1rem;
+}
+
+/* Container Styling */
+.container {
+    margin: 20px auto;
+    max-width: 1200px;
+    padding: 15px;
+}
+
+/* Header Styling */
+.header-title {
+    color: #e74c3c; /* Red for "Explore Your Flights" */
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.header-subtitle {
+    text-align: center;
+    color: #666;
+    margin-bottom: 20px;
+    font-size: 1rem;
+}
+
+.header-subtitle strong {
+    color: #333;
+    font-weight: 600;
+}
+
+/* Section Title for Outbound/Return */
+.section-title {
+    color: #333;
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-top: 30px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 10px;
+}
+
+/* Flight Card Styling */
+.flight-card {
+    background-color: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+.flight-card:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Airline Logo */
+.airline-logo img {
+    max-width: 100px;
+    height: auto;
+}
+
+/* Flight Time and Details */
+.flight-time {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.stop-info {
+    font-size: 0.9rem;
+    color: #666;
+    cursor: help;
+}
+
+.flight-details {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 0;
+}
+
+/* Price Styling */
+.price {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #e74c3c; /* Red for price */
+    margin-bottom: 5px;
+}
+
+.lowest-price {
+    font-size: 0.9rem;
+    color: #e74c3c; /* Red for "Lowest price" */
+    display: block;
+}
+
+/* Toggle Details (Arrow) */
+.toggle-details {
+    text-decoration: none;
+    color: #333;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.toggle-details .arrow {
+    transition: transform 0.3s ease;
+}
+
+/* Flight Details Dropdown */
+.flight-details-dropdown {
+    display: none;
+    margin-top: 15px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.flight-details-dropdown.active {
+    display: block;
+}
+
+/* Fare Option Styling */
+.fare-option {
+    margin-bottom: 15px;
+    text-align: center;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.fare-option strong {
+    font-size: 1.1rem;
+    color: #333;
+}
+
+.fare-option p {
+    margin-bottom: 10px;
+    color: #666;
+}
+
+.select-btn {
+    background-color: #e74c3c; /* Red button */
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.select-btn:hover {
+    background-color: #c0392b; /* Darker red on hover */
+}
+
+/* Alert Styling */
+.alert.alert-warning {
+    background-color: #fff3cd;
+    color: #856404;
+    border-color: #ffeeba;
+    text-align: center;
+    margin-top: 20px;
+    border-radius: 8px;
+}
+.flight-card.card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    padding: 15px;
+    transition: transform 0.2s ease;
+}
+.flight-card.card:hover {
+    transform: scale(1.02); /* Subtle hover effect */
+}
+
+/* Tooltip Styling (Bootstrap handles most, but customize if needed) */
+[data-bs-toggle="tooltip"] {
+    position: relative;
+}
