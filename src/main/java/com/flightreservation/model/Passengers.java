@@ -1,16 +1,39 @@
 package com.flightreservation.model;
 
-import java.io.Serializable;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
-public class Passengers implements Serializable {
+@Entity
+@Table(name = "passengers")
+public class Passengers {
 
-	private static final long serialVersionUID = 1L;
-
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "passenger_id")
 	private int passengerId;
+
+	@ManyToOne
+	@JoinColumn(name = "booking_id")
 	private Bookings bookings;
+
+	@Column(name = "passenger_name", nullable = false, length = 255)
 	private String passengerName;
+
+	@Column(name = "passenger_age", nullable = false)
 	private int passangerAge;
+
+	@Column(name = "passenger_passport", nullable = false, length = 255)
 	private String passangerPassport;
+
+	public Passengers() {
+		
+	}
 
 	public Passengers(int passengerId, Bookings bookings, String passengerName, int passengerAge,
 			String passengerPassport) {

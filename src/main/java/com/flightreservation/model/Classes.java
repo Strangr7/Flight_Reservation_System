@@ -1,6 +1,6 @@
 package com.flightreservation.model;
 
-import java.io.Serializable;
+
 
 import com.flightreservation.model.enums.FlightClasses;
 import com.flightreservation.util.FlightClassesConverter;
@@ -16,8 +16,8 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "classes")
-public class Classes implements Serializable {
-	private static final long serialVersionUID = 1L;
+public class Classes {
+	
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

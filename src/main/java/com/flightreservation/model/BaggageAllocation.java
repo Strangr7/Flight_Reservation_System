@@ -1,10 +1,10 @@
 package com.flightreservation.model;
 
-import java.io.Serializable;
 
-public class BaggageAllocation implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+public class BaggageAllocation  {
+
+
 
 	private int baggageAllocationId;
 	private Bookings bookings;

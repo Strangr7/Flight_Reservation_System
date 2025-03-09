@@ -1,15 +1,15 @@
 package com.flightreservation.model;
 
-import java.io.Serializable;
+
 import java.math.BigDecimal;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "baggagerules")
-public class BaggageRules implements Serializable {
+public class BaggageRules  {
 
-	private static final long serialVersionUID = 1L;
+	
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

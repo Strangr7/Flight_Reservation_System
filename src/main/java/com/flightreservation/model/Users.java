@@ -2,17 +2,41 @@ package com.flightreservation.model;
 
 import com.flightreservation.model.enums.UserRoles;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
+@Entity
+@Table(name = "users")
 public class Users {
+
+	@Id
+	@Column(name = "user_id")
 	private int userId;
+
+	@Column(name = "name")
 	private String name;
+
+	@Column(name = "email")
+	private String email;
+
+	@Column(name = "phone")
 	private String phone;
+
+	@Column(name = "password_hash")
 	private String password;
+
+	@Column(name = "role")
+	@Enumerated(EnumType.STRING)
 	private UserRoles userRoles;
 
-	public Users(int userId, String name, String phone, String password, UserRoles userRoles) {
+	public Users(int userId, String name, String phone, String email, String password, UserRoles userRoles) {
 		this.userId = userId;
 		this.name = name;
+		this.email = email;
 		this.phone = phone;
 		this.password = password;
 		this.userRoles = userRoles;
@@ -35,6 +59,14 @@ public class Users {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public String getPhone() {

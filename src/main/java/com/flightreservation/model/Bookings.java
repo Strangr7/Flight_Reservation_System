@@ -1,7 +1,5 @@
 package com.flightreservation.model;
 
-import java.io.Serializable;
-
 import com.flightreservation.model.enums.BookingStatus;
 
 import jakarta.persistence.Column;
@@ -17,9 +15,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "bookings")
-public class Bookings implements Serializable {
-
-	private static final long serialVersionUID = 1L;
+public class Bookings {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,6 +48,10 @@ public class Bookings implements Serializable {
 	@Column(name = "status", nullable = false)
 	@Enumerated(EnumType.STRING)
 	private BookingStatus bookingStatus;
+	
+	public Bookings() {
+		// TODO Auto-generated constructor stub
+	}
 
 	public Bookings(int bookingId, Users users, Flights flights, Flights returnFlights, Seats seats, Meals meals,
 			String PNR, BookingStatus bookingStatus) {

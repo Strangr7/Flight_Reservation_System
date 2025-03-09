@@ -1,7 +1,5 @@
 package com.flightreservation.model;
 
-import java.io.Serializable;
-
 import com.flightreservation.model.embedded.FlightPriceId;
 
 import jakarta.persistence.Column;
@@ -14,9 +12,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "FlightPrices")
-public class FlightPrices implements Serializable {
-
-	private static final long serialVersionUID = 1L;
+public class FlightPrices {
 
 	@EmbeddedId
 	private FlightPriceId id;

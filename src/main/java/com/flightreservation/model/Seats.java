@@ -1,14 +1,13 @@
 package com.flightreservation.model;
 
-import java.io.Serializable;
 import jakarta.persistence.*;
 import com.flightreservation.util.annotation.NotNull;
 
 @Entity
 @Table(name = "seats")
-public class Seats implements Serializable {
+public class Seats  {
 
-	private static final long serialVersionUID = 1L;
+	
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

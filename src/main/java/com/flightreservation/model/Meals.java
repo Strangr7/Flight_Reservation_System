@@ -1,6 +1,6 @@
 package com.flightreservation.model;
 
-import java.io.Serializable;
+
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,13 +11,12 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "meals")
-public class Meals implements Serializable {
+public class Meals  {
 
-	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "meals_id")
+	@Column(name = "meal_id")
 	private int mealsId;
 
 	@Column(name = "meal_name")
@@ -25,6 +24,8 @@ public class Meals implements Serializable {
 
 	@Column(name = "description")
 	private String description;
+	
+	public Meals() {}
 
 	public Meals(int mealsId, String mealName, String decription) {
 		this.mealsId = mealsId;

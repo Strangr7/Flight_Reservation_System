@@ -1,6 +1,5 @@
 package com.flightreservation.model;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,8 +9,8 @@ import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "flights")
-public class Flights implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class Flights  {
+    
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

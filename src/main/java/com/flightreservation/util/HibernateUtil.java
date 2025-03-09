@@ -10,11 +10,10 @@ import org.slf4j.LoggerFactory;
 
 public class HibernateUtil {
     private static final Logger logger = LoggerFactory.getLogger(HibernateUtil.class);
-    private static volatile SessionFactory sessionFactory;  // Thread-safe singleton
-    private static final Object LOCK = new Object();  // For synchronized initialization
+    private static volatile SessionFactory sessionFactory;
+    private static final Object LOCK = new Object();
 
     private HibernateUtil() {
-        // Prevent instantiation
         throw new AssertionError("Utility class should not be instantiated");
     }
 
@@ -34,24 +33,21 @@ public class HibernateUtil {
         try {
             logger.info("Initializing Hibernate SessionFactory...");
 
-            // Load configuration from hibernate.cfg.xml
+            // Load configuration and mappings from hibernate.cfg.xml
             registry = new StandardServiceRegistryBuilder()
-                    .configure("hibernate.cfg.xml")  // Explicitly specify config file
+                    .configure("hibernate.cfg.xml")
                     .build();
 
-            // Build SessionFactory with entity mappings
+            // Build SessionFactory (no manual addAnnotatedClass since mappings are in config)
             sessionFactory = new MetadataSources(registry)
-                    .addAnnotatedClass(com.flightreservation.model.Flights.class)
-                    .addAnnotatedClass(com.flightreservation.model.Stops.class)
                     .buildMetadata()
                     .buildSessionFactory();
 
             logger.info("Hibernate SessionFactory initialized successfully.");
 
-            // Validate connection on startup using modern API
+            // Validate connection
             try (Session session = sessionFactory.openSession()) {
                 session.beginTransaction();
-                // Use a simple native SQL query with the updated API
                 Number result = (Number) session.createNativeQuery("SELECT 1", Number.class)
                                                .getSingleResult();
                 if (result.intValue() == 1) {
@@ -84,7 +80,6 @@ public class HibernateUtil {
         }
     }
 
-    // Optional: For testing or reinitialization (use cautiously in production)
     public static void reset() {
         shutdown();
         logger.warn("HibernateUtil reset. Will reinitialize on next use.");

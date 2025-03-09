@@ -1,14 +1,13 @@
 package com.flightreservation.model;
 
-import java.io.Serializable;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "stops")
-public class Stops implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class Stops  {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-increment primary key

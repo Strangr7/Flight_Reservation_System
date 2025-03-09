@@ -11,7 +11,7 @@
 		<property name="hibernate.connection.password">StrongPassword123!</property>
 		<property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
 		<property name="hibernate.hbm2ddl.auto">update</property>
-		<property name="show_sql">true</property>
+
 		<property name="hibernate.cache.use_second_level_cache">false</property>
 		<property name="hibernate.cache.use_query_cache">false</property>
 		<property name="hibernate.show_sql">true</property>
@@ -23,19 +23,21 @@
 		<mapping class="com.flightreservation.model.Airports" />
 		<!--<mapping class="com.flightreservation.model.BaggageAllocation" />-->
 		<mapping class="com.flightreservation.model.BaggageRules" />
-		<!--<mapping class="com.flightreservation.model.Bookings " />-->
+		<mapping class="com.flightreservation.model.Bookings" />
 		<mapping class="com.flightreservation.model.Classes" />
 		<mapping class="com.flightreservation.model.FlightPrices" />
 		<mapping class="com.flightreservation.model.Flights" />
-		<!--<mapping class="com.flightreservation.model.Meals" />-->
+		<mapping class="com.flightreservation.model.Meals" />
 		<mapping class="com.flightreservation.model.Passengers" />
+		<mapping class="com.flightreservation.model.Payments" />
 		<mapping class="com.flightreservation.model.Seats" />
 		<mapping class="com.flightreservation.model.Stops" />
-		<!--<mapping class="com.flightreservation.model.Users" />-->
+		<mapping class="com.flightreservation.model.Users" />
 		<mapping class="com.flightreservation.model.embedded.FlightPriceId" />
-		<!--<mapping class="com.flightreservation.model.enums.BookinStatus" />-->
+		<mapping class="com.flightreservation.model.enums.BookingStatus" />
 		<mapping class="com.flightreservation.model.enums.FlightClasses" />
-		<!--<mapping class="com.flightreservation.model.enums.UserRoles" />-->
+		<mapping class="com.flightreservation.model.enums.PaymentStatus" />
+		<mapping class="com.flightreservation.model.enums.UserRoles" />
 
 
 	</session-factory>
