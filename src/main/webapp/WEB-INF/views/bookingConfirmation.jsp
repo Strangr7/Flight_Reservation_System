@@ -14,7 +14,7 @@
             Your booking has been successfully confirmed. Your PNR is: <strong><%=request.getAttribute("pnr")%></strong>.
         </div>
         <p>Please save this PNR for future reference.</p>
-        <a href="<%=request.getContextPath()%>/searchFlights" class="btn btn-primary">Book Another Flight</a>
+       <a href="<%=request.getContextPath()%>/view?page=searchFlights" class="btn btn-primary">Book Another Flight</a>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

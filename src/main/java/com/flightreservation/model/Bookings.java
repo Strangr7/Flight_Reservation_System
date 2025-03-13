@@ -23,7 +23,7 @@ public class Bookings {
 	private int bookingId;
 
 	@ManyToOne
-	@JoinColumn(name = "user_id", nullable = false)
+	@JoinColumn(name = "user_id", nullable = true)
 	private Users users;
 
 	@ManyToOne
@@ -53,9 +53,15 @@ public class Bookings {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Bookings(int bookingId, Users users, Flights flights, Flights returnFlights, Seats seats, Meals meals,
-			String PNR, BookingStatus bookingStatus) {
-		// TODO Auto-generated constructor stub
+	public Bookings(int bookingId, Users users, Flights flights, Flights returnFlights, Seats seats, Meals meals, String PNR, BookingStatus bookingStatus) {
+	    this.bookingId = bookingId;
+	    this.users = users;
+	    this.flights = flights;
+	    this.returnFlights = returnFlights;
+	    this.seats = seats;
+	    this.meals = meals;
+	    this.PNR = PNR;
+	    this.bookingStatus = bookingStatus;
 	}
 
 	public int getBookingId() {
@@ -70,10 +76,9 @@ public class Bookings {
 		return flights;
 	}
 
-	public Flights getReurnFlights() {
-		return returnFlights;
-	}
-
+public Flights getReturnFlights() {
+	return returnFlights;
+}
 	public Seats getSeats() {
 		return seats;
 	}

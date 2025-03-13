@@ -2,7 +2,7 @@ package com.flightreservation.DTO;
 
 import com.flightreservation.model.BaggageRules;
 import com.flightreservation.model.Flights;
-import com.flightreservation.model.Seats;
+
 import com.flightreservation.model.Stops;
 import com.flightreservation.model.enums.FlightClasses;
 

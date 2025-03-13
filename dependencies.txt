@@ -1,0 +1,57 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ----------< com.flightreservation:Flight_Reservation_System >-----------
+[INFO] Building Flight_Reservation_System 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ war ]---------------------------------
+[WARNING] The artifact org.hibernate:hibernate-core:jar:6.2.1.Final has been relocated to org.hibernate.orm:hibernate-core:jar:6.2.1.Final
+[INFO] 
+[INFO] --- maven-dependency-plugin:2.8:tree (default-cli) @ Flight_Reservation_System ---
+[WARNING] The artifact org.hibernate:hibernate-core:jar:6.2.1.Final has been relocated to org.hibernate.orm:hibernate-core:jar:6.2.1.Final
+[INFO] com.flightreservation:Flight_Reservation_System:war:0.0.1-SNAPSHOT
+[INFO] +- org.junit.jupiter:junit-jupiter-api:jar:5.11.3:test
+[INFO] |  +- org.opentest4j:opentest4j:jar:1.3.0:test
+[INFO] |  +- org.junit.platform:junit-platform-commons:jar:1.11.3:test
+[INFO] |  \- org.apiguardian:apiguardian-api:jar:1.1.2:test
+[INFO] +- org.mockito:mockito-core:jar:3.8.0:test
+[INFO] |  +- net.bytebuddy:byte-buddy:jar:1.10.20:runtime
+[INFO] |  +- net.bytebuddy:byte-buddy-agent:jar:1.10.20:test
+[INFO] |  \- org.objenesis:objenesis:jar:3.1:test
+[INFO] +- mysql:mysql-connector-java:jar:8.0.30:compile
+[INFO] |  \- com.google.protobuf:protobuf-java:jar:3.19.4:compile
+[INFO] +- ch.qos.logback:logback-classic:jar:1.5.16:compile
+[INFO] |  \- ch.qos.logback:logback-core:jar:1.5.16:compile
+[INFO] +- jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:jar:3.0.2:provided
+[INFO] |  \- jakarta.el:jakarta.el-api:jar:5.0.0:compile
+[INFO] +- jakarta.servlet:jakarta.servlet-api:jar:5.0.0:provided
+[INFO] +- jakarta.servlet.jsp:jakarta.servlet.jsp-api:jar:3.0.0:provided
+[INFO] +- jakarta.validation:jakarta.validation-api:jar:3.0.2:compile
+[INFO] +- org.glassfish:jakarta.el:jar:4.0.2:compile
+[INFO] +- org.hibernate.orm:hibernate-core:jar:6.2.1.Final:compile
+[INFO] |  +- jakarta.transaction:jakarta.transaction-api:jar:2.0.1:compile
+[INFO] |  +- org.jboss.logging:jboss-logging:jar:3.5.0.Final:compile
+[INFO] |  +- org.hibernate.common:hibernate-commons-annotations:jar:6.0.6.Final:runtime
+[INFO] |  +- io.smallrye:jandex:jar:3.0.5:runtime
+[INFO] |  +- com.fasterxml:classmate:jar:1.5.1:compile
+[INFO] |  +- jakarta.xml.bind:jakarta.xml.bind-api:jar:4.0.0:runtime
+[INFO] |  |  \- jakarta.activation:jakarta.activation-api:jar:2.1.0:runtime
+[INFO] |  +- org.glassfish.jaxb:jaxb-runtime:jar:4.0.2:runtime
+[INFO] |  |  \- org.glassfish.jaxb:jaxb-core:jar:4.0.2:runtime
+[INFO] |  |     +- org.eclipse.angus:angus-activation:jar:2.0.0:runtime
+[INFO] |  |     +- org.glassfish.jaxb:txw2:jar:4.0.2:runtime
+[INFO] |  |     \- com.sun.istack:istack-commons-runtime:jar:4.1.1:runtime
+[INFO] |  +- jakarta.inject:jakarta.inject-api:jar:2.0.1:runtime
+[INFO] |  \- org.antlr:antlr4-runtime:jar:4.10.1:runtime
+[INFO] +- org.hibernate.validator:hibernate-validator:jar:8.0.0.Final:compile
+[INFO] +- com.fasterxml.jackson.core:jackson-databind:jar:2.18.2:compile
+[INFO] |  +- com.fasterxml.jackson.core:jackson-annotations:jar:2.18.2:compile
+[INFO] |  \- com.fasterxml.jackson.core:jackson-core:jar:2.18.2:compile
+[INFO] +- com.fasterxml.jackson.datatype:jackson-datatype-jsr310:jar:2.18.2:compile
+[INFO] +- jakarta.persistence:jakarta.persistence-api:jar:3.1.0:compile
+[INFO] \- org.slf4j:slf4j-api:jar:2.1.0-alpha1:compile
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  1.502 s
+[INFO] Finished at: 2025-03-11T12:53:09+05:30
+[INFO] ------------------------------------------------------------------------

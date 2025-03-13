@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
-import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,7 +75,7 @@ public class SearchFlightsOneWay extends HttpServlet {
 			logger.info("Searching with departureAirportCode={}, destinationAirportCode={}, departureDate={}",
 					departureAirportCode, destinationAirportCode, departureDate);
 			HttpSession session = request.getSession();
-		
+
 			session.setAttribute("flights", flights);
 			session.setAttribute("departureAirportCode", departureAirportCode);
 			session.setAttribute("destinationAirportCode", destinationAirportCode);

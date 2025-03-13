@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collector;
+
 import java.util.stream.Collectors;
 
 import org.hibernate.Session;
@@ -92,108 +92,101 @@ public class FlightDAO {
 	 *         are found or an error occurs.
 	 */
 	public List<FlightResultOneWay> searchFlight(String departureAirportCode, String destinationAirportCode,
-	        LocalDate departureDate) {
-	    List<FlightResultOneWay> results = new ArrayList<>();
-	    try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-	        // Step 1: Fetch flights
-	        String flightHql = "SELECT f FROM Flights f " +
-	                          "LEFT JOIN f.departureAirport dep " +
-	                          "LEFT JOIN f.destinationAirport dest " +
-	                          "WHERE (dep.airportCode = :departureAirportCode OR dep.airportCode IS NULL) " +
-	                          "AND (dest.airportCode = :destinationAirportCode OR dest.airportCode IS NULL) " +
-	                          "AND CAST(f.departureTime AS date) = :departureDate";
-	        Query<Flights> flightQuery = session.createQuery(flightHql, Flights.class);
-	        flightQuery.setParameter("departureAirportCode", departureAirportCode);
-	        flightQuery.setParameter("destinationAirportCode", destinationAirportCode);
-	        flightQuery.setParameter("departureDate", departureDate);
-	        List<Flights> flights = flightQuery.getResultList();
-	        logger.info("Found {} flights for ATL->JFK on 2023-10-15", flights.size());
+			LocalDate departureDate) {
+		List<FlightResultOneWay> results = new ArrayList<>();
+		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+			// Step 1: Fetch flights
+			String flightHql = "SELECT f FROM Flights f " + "LEFT JOIN f.departureAirport dep "
+					+ "LEFT JOIN f.destinationAirport dest "
+					+ "WHERE (dep.airportCode = :departureAirportCode OR dep.airportCode IS NULL) "
+					+ "AND (dest.airportCode = :destinationAirportCode OR dest.airportCode IS NULL) "
+					+ "AND CAST(f.departureTime AS date) = :departureDate";
+			Query<Flights> flightQuery = session.createQuery(flightHql, Flights.class);
+			flightQuery.setParameter("departureAirportCode", departureAirportCode);
+			flightQuery.setParameter("destinationAirportCode", destinationAirportCode);
+			flightQuery.setParameter("departureDate", departureDate);
+			List<Flights> flights = flightQuery.getResultList();
+			logger.info("Found {} flights for ATL->JFK on 2023-10-15", flights.size());
 
-	        if (flights.isEmpty()) {
-	            return Collections.emptyList();
-	        }
+			if (flights.isEmpty()) {
+				return Collections.emptyList();
+			}
 
-	        // Step 2: Fetch stops
-	        List<Integer> flightIds = flights.stream().map(Flights::getFlightId).collect(Collectors.toList());
-	        String stopsHql = "FROM Stops s WHERE s.flight.flightId IN (:flightIds)";
-	        Query<Stops> stopsQuery = session.createQuery(stopsHql, Stops.class);
-	        stopsQuery.setParameter("flightIds", flightIds);
-	        List<Stops> stopsList = stopsQuery.getResultList();
-	        Map<Integer, List<Stops>> stopsByFlight = stopsList.stream()
-	                .collect(Collectors.groupingBy(s -> s.getFlight().getFlightId()));
+			// Step 2: Fetch stops
+			List<Integer> flightIds = flights.stream().map(Flights::getFlightId).collect(Collectors.toList());
+			String stopsHql = "FROM Stops s WHERE s.flight.flightId IN (:flightIds)";
+			Query<Stops> stopsQuery = session.createQuery(stopsHql, Stops.class);
+			stopsQuery.setParameter("flightIds", flightIds);
+			List<Stops> stopsList = stopsQuery.getResultList();
+			Map<Integer, List<Stops>> stopsByFlight = stopsList.stream()
+					.collect(Collectors.groupingBy(s -> s.getFlight().getFlightId()));
 
-	        // Step 3: Fetch pricing and class information
-	        String priceHql = "SELECT fp.flight.flightId, fp.flightClass, fp.basePrice, fp.dynamicPrice " +
-	                          "FROM FlightPrices fp WHERE fp.flight.flightId IN (:flightIds)";
-	        Query<Object[]> priceQuery = session.createQuery(priceHql, Object[].class);
-	        priceQuery.setParameter("flightIds", flightIds);
-	        List<Object[]> priceResults = priceQuery.getResultList();
+			// Step 3: Fetch pricing and class information
+			String priceHql = "SELECT fp.flight.flightId, fp.flightClass, fp.basePrice, fp.dynamicPrice "
+					+ "FROM FlightPrices fp WHERE fp.flight.flightId IN (:flightIds)";
+			Query<Object[]> priceQuery = session.createQuery(priceHql, Object[].class);
+			priceQuery.setParameter("flightIds", flightIds);
+			List<Object[]> priceResults = priceQuery.getResultList();
 
-	        // Step 4: Fetch BaggageRules
-	        String baggageHql = "FROM com.flightreservation.model.BaggageRules br " +
-	                            "JOIN FETCH br.classes c " +
-	                            "WHERE br.flight.flightId IN (:flightIds)";
-	        Query<BaggageRules> baggageQuery = session.createQuery(baggageHql, BaggageRules.class);
-	        baggageQuery.setParameter("flightIds", flightIds);
-	        List<BaggageRules> baggageRulesList = baggageQuery.getResultList();
-	        logger.info("Found {} baggage rules", baggageRulesList.size());
+			// Step 4: Fetch BaggageRules
+			String baggageHql = "FROM com.flightreservation.model.BaggageRules br " + "JOIN FETCH br.classes c "
+					+ "WHERE br.flight.flightId IN (:flightIds)";
+			Query<BaggageRules> baggageQuery = session.createQuery(baggageHql, BaggageRules.class);
+			baggageQuery.setParameter("flightIds", flightIds);
+			List<BaggageRules> baggageRulesList = baggageQuery.getResultList();
+			logger.info("Found {} baggage rules", baggageRulesList.size());
 
-	        // Step 5: Fetch available Seats
-	        String seatsHql = "SELECT s.flight.flightId, s.seatClass.classId, COUNT(s) " +
-	                          "FROM Seats s " +
-	                          "WHERE s.flight.flightId IN (:flightIds) " +
-	                          "AND s.isAvailable = true " +
-	                          "GROUP BY s.flight.flightId, s.seatClass.classId";
-	        Query<Object[]> seatsQuery = session.createQuery(seatsHql, Object[].class);
-	        seatsQuery.setParameter("flightIds", flightIds);
-	        List<Object[]> seatsResults = seatsQuery.getResultList();
+			// Step 5: Fetch available Seats
+			String seatsHql = "SELECT s.flight.flightId, s.seatClass.classId, COUNT(s) " + "FROM Seats s "
+					+ "WHERE s.flight.flightId IN (:flightIds) " + "AND s.isAvailable = true "
+					+ "GROUP BY s.flight.flightId, s.seatClass.classId";
+			Query<Object[]> seatsQuery = session.createQuery(seatsHql, Object[].class);
+			seatsQuery.setParameter("flightIds", flightIds);
+			List<Object[]> seatsResults = seatsQuery.getResultList();
 
-	        Map<String, Integer> availableSeatsByFlightAndClass = seatsResults.stream()
-	                .collect(Collectors.toMap(
-	                        row -> row[0] + "-" + row[1],
-	                        row -> ((Long) row[2]).intValue(),
-	                        (existing, replacement) -> existing)); // Handle duplicates
+			Map<String, Integer> availableSeatsByFlightAndClass = seatsResults.stream()
+					.collect(Collectors.toMap(row -> row[0] + "-" + row[1], row -> ((Long) row[2]).intValue(),
+							(existing, replacement) -> existing)); // Handle duplicates
 
-	        Map<String, BaggageRules> baggageRulesByFlightAndClass = baggageRulesList.stream()
-	                .collect(Collectors.toMap(
-	                        br -> br.getFlight().getFlightId() + "-" + br.getClasses().getClassId(),
-	                        br -> br,
-	                        (existing, replacement) -> existing));
+			Map<String, BaggageRules> baggageRulesByFlightAndClass = baggageRulesList.stream()
+					.collect(Collectors.toMap(br -> br.getFlight().getFlightId() + "-" + br.getClasses().getClassId(),
+							br -> br, (existing, replacement) -> existing));
 
-	        // Step 6: Organize prices, baggage rules, and seats
-	        Map<Integer, List<FlightResultOneWay.PriceClass>> priceByFlight = new HashMap<>();
-	        for (Object[] row : priceResults) {
-	            int flightId = (int) row[0];
-	            Classes flightClass = (Classes) row[1]; // Correct cast to Classes entity
-	            Double basePrice = (Double) row[2];
-	            Double dynamicPrice = (Double) row[3];
+			// Step 6: Organize prices, baggage rules, and seats
+			Map<Integer, List<FlightResultOneWay.PriceClass>> priceByFlight = new HashMap<>();
+			for (Object[] row : priceResults) {
+				int flightId = (int) row[0];
+				Classes flightClass = (Classes) row[1]; // Correct cast to Classes entity
+				Double basePrice = (Double) row[2];
+				Double dynamicPrice = (Double) row[3];
 
-	            // Convert Classes entity to FlightClasses enum
-	            FlightClasses className = flightClass.getClassName(); // This is correct
-	            String key = flightId + "-" + flightClass.getClassId();
-	            BaggageRules baggageRules = baggageRulesByFlightAndClass.get(key);
-	            int availableSeats = availableSeatsByFlightAndClass.getOrDefault(key, 0);
+				// Convert Classes entity to FlightClasses enum
+				FlightClasses className = flightClass.getClassName(); // This is correct
+				String key = flightId + "-" + flightClass.getClassId();
+				BaggageRules baggageRules = baggageRulesByFlightAndClass.get(key);
+				int availableSeats = availableSeatsByFlightAndClass.getOrDefault(key, 0);
 
-	            priceByFlight.computeIfAbsent(flightId, k -> new ArrayList<>())
-	                    .add(new FlightResultOneWay.PriceClass(className, basePrice, dynamicPrice, baggageRules, availableSeats));
-	        }
+				priceByFlight.computeIfAbsent(flightId, k -> new ArrayList<>()).add(new FlightResultOneWay.PriceClass(
+						className, basePrice, dynamicPrice, baggageRules, availableSeats));
+			}
 
-	        // Step 7: Build results
-	        for (Flights flight : flights) {
-	            List<Stops> flightStops = stopsByFlight.getOrDefault(flight.getFlightId(), new ArrayList<>());
-	            List<FlightResultOneWay.PriceClass> flightPrices = priceByFlight.getOrDefault(flight.getFlightId(),
-	                    new ArrayList<>());
+			// Step 7: Build results
+			for (Flights flight : flights) {
+				List<Stops> flightStops = stopsByFlight.getOrDefault(flight.getFlightId(), new ArrayList<>());
+				List<FlightResultOneWay.PriceClass> flightPrices = priceByFlight.getOrDefault(flight.getFlightId(),
+						new ArrayList<>());
 
-	            FlightResultOneWay flightResult = new FlightResultOneWay(flight, (long) flightStops.size(), flightStops);
-	            flightResult.getPricesAndClasses().addAll(flightPrices);
-	            results.add(flightResult);
-	        }
+				FlightResultOneWay flightResult = new FlightResultOneWay(flight, (long) flightStops.size(),
+						flightStops);
+				flightResult.getPricesAndClasses().addAll(flightPrices);
+				results.add(flightResult);
+			}
 
-	        return results;
-	    } catch (Exception e) {
-	        logger.error("Error searching for flights: {}", e.getMessage(), e);
-	        return results; // Return partial results
-	    }
+			return results;
+		} catch (Exception e) {
+			logger.error("Error searching for flights: {}", e.getMessage(), e);
+			return results; // Return partial results
+		}
 	}
 
 	/**
@@ -244,5 +237,7 @@ public class FlightDAO {
 		// Return the round-trip result
 		return new FlightResultRoundTrip(filteredOutbound, filteredReturn);
 	}
+	
+	//CRUD for the flights
 
 }

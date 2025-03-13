@@ -2,6 +2,7 @@ package com.flightreservation.util;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
@@ -9,79 +10,81 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class HibernateUtil {
-    private static final Logger logger = LoggerFactory.getLogger(HibernateUtil.class);
-    private static volatile SessionFactory sessionFactory;
-    private static final Object LOCK = new Object();
+	private static final Logger logger = LoggerFactory.getLogger(HibernateUtil.class);
+	private static volatile SessionFactory sessionFactory;
+	private static volatile StandardServiceRegistry registry; // Keep registry as a field
+	private static final Object LOCK = new Object();
 
-    private HibernateUtil() {
-        throw new AssertionError("Utility class should not be instantiated");
-    }
+	private HibernateUtil() {
+		throw new AssertionError("Utility class should not be instantiated");
+	}
 
-    public static SessionFactory getSessionFactory() {
-        if (sessionFactory == null) {
-            synchronized (LOCK) {
-                if (sessionFactory == null) {
-                    initializeSessionFactory();
-                }
-            }
-        }
-        return sessionFactory;
-    }
+	public static SessionFactory getSessionFactory() {
+		if (sessionFactory == null || sessionFactory.isClosed()) { // Check if null or closed
+			synchronized (LOCK) {
+				if (sessionFactory == null || sessionFactory.isClosed()) {
+					logger.info("SessionFactory is null or closed, reinitializing...");
+					initializeSessionFactory();
+				}
+			}
+		}
+		return sessionFactory;
+	}
 
-    private static void initializeSessionFactory() {
-        StandardServiceRegistry registry = null;
-        try {
-            logger.info("Initializing Hibernate SessionFactory...");
+	private static void initializeSessionFactory() {
+		try {
+			logger.info("Initializing Hibernate SessionFactory...");
 
-            // Load configuration and mappings from hibernate.cfg.xml
-            registry = new StandardServiceRegistryBuilder()
-                    .configure("hibernate.cfg.xml")
-                    .build();
+			// Build registry only if it doesn’t exist or was destroyed
+			if (registry == null) {
+				registry = new StandardServiceRegistryBuilder().configure("hibernate.cfg.xml").build();
+			}
 
-            // Build SessionFactory (no manual addAnnotatedClass since mappings are in config)
-            sessionFactory = new MetadataSources(registry)
-                    .buildMetadata()
-                    .buildSessionFactory();
+			sessionFactory = new MetadataSources(registry).buildMetadata().buildSessionFactory();
 
-            logger.info("Hibernate SessionFactory initialized successfully.");
+			logger.info("Hibernate SessionFactory initialized successfully.");
 
-            // Validate connection
-            try (Session session = sessionFactory.openSession()) {
-                session.beginTransaction();
-                Number result = (Number) session.createNativeQuery("SELECT 1", Number.class)
-                                               .getSingleResult();
-                if (result.intValue() == 1) {
-                    logger.info("Database connectivity verified.");
-                } else {
-                    logger.warn("Unexpected result from connectivity test: {}", result);
-                }
-                session.getTransaction().commit();
-            }
+			// Validate connection with a simpler approach
+			try (Session session = sessionFactory.openSession()) {
+				session.beginTransaction();
+				int result = session.createNativeQuery("SELECT 1", Integer.class).getSingleResult();
+				if (result == 1) {
+					logger.info("Database connectivity verified.");
+				} else {
+					logger.warn("Unexpected result from connectivity test: {}", result);
+				}
+				session.getTransaction().commit();
+			}
 
-        } catch (Exception e) {
-            logger.error("Failed to initialize Hibernate SessionFactory!", e);
-            if (registry != null) {
-                StandardServiceRegistryBuilder.destroy(registry);
-            }
-            throw new IllegalStateException("Could not initialize Hibernate SessionFactory.", e);
-        }
-    }
+		} catch (Exception e) {
+			logger.error("Failed to initialize Hibernate SessionFactory!", e);
+			// Don’t destroy registry here; keep it for retry
+			throw new IllegalStateException("Could not initialize Hibernate SessionFactory.", e);
+		}
+	}
 
-    public static void shutdown() {
-        if (sessionFactory != null && !sessionFactory.isClosed()) {
-            synchronized (LOCK) {
-                if (sessionFactory != null && !sessionFactory.isClosed()) {
-                    logger.info("Shutting down Hibernate SessionFactory...");
-                    sessionFactory.close();
-                    sessionFactory = null;
-                    logger.info("Hibernate SessionFactory shut down.");
-                }
-            }
-        }
-    }
+	public static void shutdown() {
+		if (sessionFactory != null && !sessionFactory.isClosed()) {
+			synchronized (LOCK) {
+				if (sessionFactory != null && !sessionFactory.isClosed()) {
+					logger.info("Shutting down Hibernate SessionFactory...");
+					sessionFactory.close();
+					sessionFactory = null;
+					if (registry != null) {
+						StandardServiceRegistryBuilder.destroy(registry);
+						registry = null;
+						logger.info("StandardServiceRegistry destroyed.");
+					}
+					logger.info("Hibernate SessionFactory shut down.");
+				}
+			}
+		}
+	}
 
-    public static void reset() {
-        shutdown();
-        logger.warn("HibernateUtil reset. Will reinitialize on next use.");
-    }
+	public static void resetSessionFactory() {
+		shutdown();
+		initializeSessionFactory();
+		logger.info("SessionFactory reset complete.");
+	}
+
 }

@@ -17,123 +17,143 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.flightreservation.DTO.FlightResultOneWay;
-import com.flightreservation.dao.SeatDAO;
+
 import com.flightreservation.model.Bookings;
-import com.flightreservation.model.Meals;
+
 import com.flightreservation.model.Passengers;
 import com.flightreservation.model.Payments;
 import com.flightreservation.model.Seats;
 import com.flightreservation.model.Users;
 import com.flightreservation.model.enums.BookingStatus;
 import com.flightreservation.model.enums.PaymentStatus;
+
 import com.flightreservation.util.HibernateUtil;
 
 @WebServlet("/processPayment")
 public class ProcessPayment extends HttpServlet {
-    private static final long serialVersionUID = 1L;
-    private static final Logger logger = LoggerFactory.getLogger(ProcessPayment.class);
+	private static final long serialVersionUID = 1L;
+	private static final Logger logger = LoggerFactory.getLogger(ProcessPayment.class);
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
-        HttpSession session = request.getSession(false);
-        String token = request.getParameter("token");
+		HttpSession session = request.getSession(false);
+		String token = request.getParameter("token");
 
-        if (session == null || token == null || !token.equals(session.getAttribute("bookingToken"))) {
-            logger.warn("Invalid or missing booking token");
-            response.sendRedirect(request.getContextPath() + "/searchFlights");
-            return;
-        }
+		if (session == null || token == null || !token.equals(session.getAttribute("bookingToken"))) {
+			logger.warn("Invalid or missing booking token");
+			response.sendRedirect(request.getContextPath() + "/searchFlights");
+			return;
+		}
 
-        // Simulate payment processing
-        boolean paymentSuccess = true; // Replace with real payment gateway logic
+		Users loggedInUser = (Users) session.getAttribute("loggedInUser");
 
-        if (!paymentSuccess) {
-            logger.info("Payment failed for token={}", token);
-            response.sendRedirect(request.getContextPath() + "/payment?token=" + token + "&error=paymentFailed");
-            return;
-        }
+		// Simulate payment processing
+		boolean paymentSuccess = true; // Replace with real payment gateway logic
 
-        // Payment succeeded, save data
-        try (Session hibernateSession = HibernateUtil.getSessionFactory().openSession()) {
-            Transaction tx = hibernateSession.beginTransaction();
+		if (!paymentSuccess) {
+			logger.info("Payment failed for token={}", token);
+			response.sendRedirect(request.getContextPath() + "/payment?token=" + token + "&error=paymentFailed");
+			return;
+		}
 
-            // Get data from session
-            FlightResultOneWay selectedFlight = (FlightResultOneWay) session.getAttribute("selectedFlight");
-            String passengerName = (String) session.getAttribute("passengerName");
-            Integer passengerAge = (Integer) session.getAttribute("passengerAge");
-            String passengerPassport = (String) session.getAttribute("passengerPassport");
-            Integer seatId = (Integer) session.getAttribute("seatId");
-            Integer mealId = (Integer) session.getAttribute("mealId");
-            Double amount = (Double) session.getAttribute("paymentAmount");
+		// Payment succeeded, save data
+		try (Session hibernateSession = HibernateUtil.getSessionFactory().openSession()) {
+			Transaction tx = hibernateSession.beginTransaction();
 
-            // Dummy user (replace with real user logic later)
-            Users user = hibernateSession.get(Users.class, 1);
+			// Get data from session
+			FlightResultOneWay selectedFlight = (FlightResultOneWay) session.getAttribute("selectedFlight");
+			String passengerName = (String) session.getAttribute("passengerName");
+			Integer passengerAge = (Integer) session.getAttribute("passengerAge");
+			String passengerPassport = (String) session.getAttribute("passengerPassport");
+			Integer seatId = (Integer) session.getAttribute("seatId");
+			Integer mealId = (Integer) session.getAttribute("mealId");
+			Double amount = (Double) session.getAttribute("paymentAmount");
 
-            // Create Booking
-            Bookings booking = new Bookings();
-            booking.setUsers(user); // Matches setUser
-            booking.setFlights(selectedFlight.getFlight()); // Matches setFlight
-            booking.setSeats(hibernateSession.get(Seats.class, seatId)); // Matches setSeat
-            if (mealId != null) {
-                booking.setMeals(null); // Matches setMeal
-            }
-            booking.setPNR(generatePNR()); // Matches setPnr
-            booking.setStatus(BookingStatus.CONFIRMED); // Matches setStatus (String, not enum)
-            hibernateSession.persist(booking);
+			// Insert booking via native SQL
+			logger.info("Inserting booking via native SQL...");
+			String pnr = generatePNR();
+			String bookingSql = "INSERT INTO bookings (user_id, flight_id, seat_id, meal_id, pnr, status) "
+					+ "VALUES (:userId, :flightId, :seatId, :mealId, :pnr, :status)";
+			hibernateSession.createNativeQuery(bookingSql, Void.class).setParameter("userId", loggedInUser.getUserId())
+					.setParameter("flightId", selectedFlight.getFlight().getFlightId()).setParameter("seatId", seatId)
+					.setParameter("mealId", mealId).setParameter("pnr", pnr)
+					.setParameter("status", BookingStatus.CONFIRMED.name()).executeUpdate();
 
-            // Update seat availability
-            Seats seat = hibernateSession.get(Seats.class, seatId);
-            seat.setAvailable(false);
-            hibernateSession.merge(seat);
+			// Fetch the inserted booking
+			logger.info("Fetching booking with PNR: {}", pnr);
+			Bookings booking = hibernateSession.createQuery("FROM Bookings WHERE PNR = :pnr", Bookings.class)
+					.setParameter("pnr", pnr).uniqueResult();
+			if (booking == null) {
+				logger.error("No booking found for PNR: {}", pnr);
+				throw new RuntimeException("Booking not found");
+			}
+			logger.info("Booking inserted: bookingId={}", booking.getBookingId());
 
-            // Create Passenger
-            Passengers passenger = new Passengers();
-            passenger.setBookings(booking); // Matches setBooking
-            passenger.setPassengerName(passengerName); // Matches setPassengerName
-            passenger.setPassangerAge(passengerAge); // Matches setPassengerAge (fixed typo)
-            passenger.setPassangerPassport(passengerPassport); // Matches setPassengerPassport (fixed typo)
-            
-            hibernateSession.persist(passenger);
+			// Update seat availability
+			logger.info("Updating seat availability...");
+			Seats seat = hibernateSession.get(Seats.class, seatId);
+			seat.setAvailable(false);
+			hibernateSession.merge(seat);
+			logger.info("Seat updated: seatId={}", seatId);
 
-            // Create Payment
-            Payments payment = new Payments();
-            payment.setBookings(booking); // Matches setBooking
-            payment.setAmount(amount); // Matches setAmount
-            payment.setPaymentStatus(PaymentStatus.COMPLETED); // Matches setPaymentStatus (String, not enum)
-            payment.setPaymentDateTime(LocalDateTime.now()); // Matches setPaymentDate
-            hibernateSession.persist(payment);
+			// Insert passenger via native SQL
+			logger.info("Inserting passenger via native SQL...");
+			String passengerSql = "INSERT INTO passengers (booking_id, passenger_name, passenger_age, passenger_passport, flight_id) "
+					+ "VALUES (:bookingId, :name, :age, :passport, :flightId)";
+			hibernateSession.createNativeQuery(passengerSql, Void.class)
+					.setParameter("bookingId", booking.getBookingId()).setParameter("name", passengerName)
+					.setParameter("age", passengerAge).setParameter("passport", passengerPassport)
+					.setParameter("flightId", selectedFlight.getFlight().getFlightId()).executeUpdate();
 
-            tx.commit();
-            logger.info("Booking confirmed: bookingId={}, pnr={}", booking.getBookingId(), booking.getPNR());
+			// Fetch the inserted passenger
+			Passengers passenger = hibernateSession
+					.createQuery("FROM Passengers WHERE bookings = :bookings", Passengers.class)
+					.setParameter("bookings", booking).uniqueResult();
+			logger.info("Passenger inserted: passengerId={}", passenger.getPassengerId());
 
-            // Clear session
-            session.removeAttribute("selectedFlight");
-            session.removeAttribute("selectedClass");
-            session.removeAttribute("passengerName");
-            session.removeAttribute("passengerAge");
-            session.removeAttribute("passengerPassport");
-            session.removeAttribute("seatId");
-            session.removeAttribute("mealId");
-            session.removeAttribute("paymentAmount");
-            session.removeAttribute("bookingToken");
+			// Insert payment via native SQL
+			logger.info("Inserting payment via native SQL...");
+			String paymentSql = "INSERT INTO payments (booking_id, amount, payment_status, payment_date) "
+					+ "VALUES (:bookingId, :amount, :status, :date)";
+			hibernateSession.createNativeQuery(paymentSql, Void.class).setParameter("bookingId", booking.getBookingId())
+					.setParameter("amount", amount).setParameter("status", PaymentStatus.COMPLETED.name())
+					.setParameter("date", LocalDateTime.now()).executeUpdate();
 
-            response.sendRedirect(request.getContextPath() + "/bookingConfirmation?pnr=" + booking.getPNR());
+			// Fetch the inserted payment
+			Payments payment = hibernateSession.createQuery("FROM Payments WHERE bookings = :bookings", Payments.class)
+					.setParameter("bookings", booking).uniqueResult();
+			logger.info("Payment inserted: paymentId={}", payment.getPaymentId());
 
-        } catch (Exception e) {
-            logger.error("Error processing payment and saving data", e);
-            response.sendRedirect(request.getContextPath() + "/payment?token=" + token + "&error=serverError");
-        }
-    }
+			tx.commit();
+			logger.info("Booking confirmed: bookingId={}, pnr={}", booking.getBookingId(), booking.getPNR());
 
-    private String generatePNR() {
-        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        Random rnd = new Random();
-        StringBuilder sb = new StringBuilder(10);
-        for (int i = 0; i < 10; i++) {
-            sb.append(chars.charAt(rnd.nextInt(chars.length())));
-        }
-        return sb.toString();
-    }
+			// Clear session
+			session.removeAttribute("selectedFlight");
+			session.removeAttribute("selectedClass");
+			session.removeAttribute("passengerName");
+			session.removeAttribute("passengerAge");
+			session.removeAttribute("passengerPassport");
+			session.removeAttribute("seatId");
+			session.removeAttribute("mealId");
+			session.removeAttribute("paymentAmount");
+			session.removeAttribute("bookingToken");
+			response.sendRedirect(request.getContextPath() + "/bookingConfirmation?pnr=" + booking.getPNR());
+
+		} catch (Exception e) {
+			logger.error("Error processing payment and saving data", e);
+			response.sendRedirect(request.getContextPath() + "/payment?token=" + token + "&error=serverError");
+		}
+	}
+
+	private String generatePNR() {
+		String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+		Random rnd = new Random();
+		StringBuilder sb = new StringBuilder(10);
+		for (int i = 0; i < 10; i++) {
+			sb.append(chars.charAt(rnd.nextInt(chars.length())));
+		}
+		return sb.toString();
+	}
 }
