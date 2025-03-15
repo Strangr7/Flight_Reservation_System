@@ -1,330 +1,633 @@
-body {
-  font-family: 'Roboto', sans-serif;
-  background: #f8f8f8;
-  color: #333;
-  padding: 30px 0;
+/* ==========================================================================
+   Global Styles - Optimized for production
+   ========================================================================== */
+:root {
+	--primary-color: #1661af;
+	--secondary-color: #333;
+	--danger-color: #d71921;
+	--neutral-gray: #6c757d;
+	--border-radius: 5px;
+	--transition-ease: 0.25s ease-in-out;
+	--spacing-unit: 1rem;
+	--white: #fff;
 }
 
+body {
+	font-family: 'Poppins', sans-serif;
+	background: var(--white); /* White background */
+	color: var(--secondary-color);
+	padding: var(--spacing-unit) 0;
+	margin: 0;
+	box-sizing: border-box;
+	line-height: 1.6;
+}
+
+/* Ensure all elements inherit box-sizing */
+*, *:before, *:after {
+	box-sizing: inherit;
+}
+
+/* ==========================================================================
+   Swap Button Styles - Vertically centered with input fields
+   ========================================================================== */
+.swap-btn-container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+	margin: 0;
+}
+
+.swap-btn {
+	width: 32px;
+	height: 32px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 50%;
+	border: 1px solid rgba(108, 117, 125, 0.2);
+	background: var(--white); /* White background */
+	color: var(--secondary-color);
+	transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+	will-change: transform, background, color;
+}
+
+.swap-btn:hover {
+	background: var(--primary-color);
+	color: var(--white);
+	transform: rotate(180deg) scale(1.05);
+	border-color: var(--primary-color);
+}
+
+.swap-btn:active {
+	transform: scale(0.95) rotate(90deg);
+}
+
+.swap-btn:focus {
+	outline: 2px solid var(--primary-color);
+	outline-offset: 2px;
+	box-shadow: none;
+}
+
+/* ==========================================================================
+   Search Container Styles - Simplified design
+   ========================================================================== */
 .search-container {
-  max-width: 1000px;
-  margin: 30px auto;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  position: relative;
+	max-width: 1450px; margin : calc( var( --spacing-unit) * 1.5625) auto;
+		padding: calc(var(--spacing-unit) * 2);
+	background: var(--white); /* White background */
+	border-radius: 10px;
+	overflow: hidden;
+	position: relative;
+	margin: calc(var(--spacing-unit)* 1.5625) auto;
 }
 
 .search-bg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 200px;
-  background: linear-gradient(135deg, #d71921 0%, #c81218 100%);
-  clip-path: polygon(0 0, 100% 0, 100% 75%, 0 95%);
-  z-index: 1;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;	
+	min-height: 15rem;
+	background: var(--white)
+		url("https://wallpapers.com/images/high/plane-desktop-dnc62a0eoyniwrfl.webp")
+		no-repeat center/cover;
+	z-index: 1;
 }
 
+/* .search-bg::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 1;
+} */
+
 .search-content {
-  position: relative;
-  z-index: 2;
-  padding: 30px;
+	position: relative;
+	z-index: 2;
+	padding: calc(var(--spacing-unit)* 1.875);
 }
 
 .search-header {
-  text-align: center;
-  margin-bottom: 30px;
-  color: #fff;
+	text-align: center;
+	margin-bottom: calc(var(--spacing-unit)* 1.5625);
+	color: var(--secondary-color); /* Darker text for contrast on white */
+	position: relative;
+	z-index: 2;
 }
 
 .search-header h1 {
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 8px;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+	font-size: 1.9rem;
+	font-weight: 700;
+	margin-bottom: 0.5rem;
+	text-shadow: 0 2px 4px rgba(108, 117, 125, 0.15); /* Softer shadow */
+	letter-spacing: -0.5px;
 }
 
 .search-header p {
-  font-size: 1.1rem;
-  opacity: 0.9;
-  font-weight: 300;
+	font-size: 1rem;
+	opacity: 0.85;
+	font-weight: 300;
+	letter-spacing: 0.3px;
 }
 
+/* ==========================================================================
+   Form Styles - Aligned labels and simplified design
+   ========================================================================== */
 .search-card {
-  background: #fff;
-  border-radius: 8px;
-  padding: 25px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+	background: var(--white); /* White background */
+	border-radius: 10px;
+	padding: calc(var(--spacing-unit)* 1.5625);
+	animation: fadeIn 0.6s ease-out;
 }
 
 .form-label {
-  color: #d71921;
-  font-weight: 600;
-  font-size: 0.85rem;
-  margin-bottom: 8px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+	color: var(--primary-color);
+	font-weight: 600;
+	font-size: 0.8rem;
+	margin-bottom: 0.25rem;
+	text-transform: uppercase;
+	letter-spacing: 0.6px;
+	text-align: left;
+	display: block;
+	line-height: 1.2;
 }
 
-.form-control, .form-select {
-  border: 2px solid #e0e0e0;
-  border-radius: 6px;
-  font-size: 1rem;
-  padding: 12px 16px;
-  height: auto;
-  transition: all 0.3s ease;
-  box-shadow: none;
-  background-color: #f9f9f9;
-  color: #333;
+.form-control {
+	padding: 0.625rem 2.5rem 0.625rem 0.75rem;
+	position: relative;
+	border: 1px solid #e8e8e8;
+	border-radius: var(--border-radius);
+	font-size: 0.95rem;
+	height: 40px;
+	transition: border-color var(--transition-ease);
+	background-color: var(--white); /* White background */
+	color: var(--secondary-color);
 }
 
-.form-control:focus, .form-select:focus {
-  border-color: #d71921;
-  box-shadow: 0 0 0 3px rgba(215, 25, 33, 0.15);
-  background-color: #fff;
+.form-control:hover {
+	border-color: var(--primary-color);
+}
+
+.form-control:focus {
+	border-color: var(--primary-color);
+	outline: none;
 }
 
 .form-control::placeholder {
-  color: #999;
-  opacity: 1;
+	color: #999;
+	opacity: 0.8;
+	font-weight: 400;
 }
 
-.search-options {
-  background-color: #f9f9f9;
-  border-radius: 50px;
-  padding: 5px 15px;
-  display: inline-flex;
-  align-items: center;
-  border: 2px solid #e0e0e0;
-  margin-bottom: 20px;
+.form-control.success {
+	border-color: #28a745;
 }
 
-.option-group {
-  display: flex;
-  align-items: center;
-}
-
-.option-group .form-select {
-  background-color: transparent;
-  border: none;
-  border-radius: 0;
-  font-weight: 600;
-  color: #d71921;
-  padding: 8px 25px 8px 10px;
-  width: auto;
-  cursor: pointer;
+.form-control.error {
+	border-color: var(--danger-color);
 }
 
 .form-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-  margin-bottom: 10px;
+	display: flex;
+	flex-wrap: nowrap;
+	gap: 0.625rem;
+	align-items: stretch;
 }
 
 .form-row .col {
-  flex: 1;
-  min-width: 200px;
-  position: relative;
+	flex: 1;
+	min-width: 180px;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+}
+
+.form-row .col-auto {
+	flex: 0 0 auto;
+	display: flex;
+	align-items: center;
 }
 
 .form-group {
-  margin-bottom: 20px;
-  position: relative;
+	margin-bottom: 0;
+	position: relative;
+	flex: 1;
 }
 
 .input-icon {
-  position: absolute;
-  right: 15px;
-  top: 45px;
-  color: #d71921;
-  pointer-events: none;
+	position: absolute;
+	right: 0.75rem;
+	top: 50%;
+	transform: translateY(-50%);
+	color: var(--primary-color);
+	font-size: 1.1rem;
+	z-index: 2;
+	opacity: 0.9;
+	line-height: 1;
+}
+
+.input-icon:hover {
+	color: #004073;
+	cursor: pointer;
+}
+
+/* ==========================================================================
+   Search Button Styles - Simplified to match reference image
+   ========================================================================== */
+.search-btn-container {
+	display: flex;
+	align-items: center;
 }
 
 .search-btn {
-  background: #d71921;
-  color: white;
-  font-size: 1rem;
-  padding: 14px 30px;
-  border: none;
-  border-radius: 6px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 10px rgba(215, 25, 33, 0.3);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  width: 100%;
-  margin-top: 10px;
+	background: var(--primary-color);
+	color: var(--white); /* White text */
+	font-size: 0.95rem;
+	padding: 0.625rem 1.25rem;
+	border: none;
+	border-radius: var(--border-radius);
+	font-weight: 600;
+	cursor: pointer;
+	transition: background var(--transition-ease);
+	text-transform: uppercase;
+	letter-spacing: 0.7px;
+	height: 40px;
 }
 
 .search-btn:hover:not(:disabled) {
-  background: #c81218;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(215, 25, 33, 0.4);
+	background: #004073;
 }
 
 .search-btn:active:not(:disabled) {
-  transform: translateY(0);
-  box-shadow: 0 3px 8px rgba(215, 25, 33, 0.3);
+	background: #dd9d3b;
+}
+
+.search-btn:focus {
+	outline: 2px solid var(--primary-color);
+	outline-offset: 2px;
 }
 
 .search-btn:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-  transform: none;
+	opacity: 0.65;
+	cursor: not-allowed;
+	background: #b0b0b0;
+	color: #666;
 }
 
-.search-btn-container {
-  min-width: 200px;
+.search-btn.loading {
+	position: relative;
+	color: transparent;
 }
 
+.search-btn.loading::after {
+	content: '';
+	position: absolute;
+	width: 16px;
+	height: 16px;
+	border: 2px solid var(--white); /* White spinner */
+	border-top-color: transparent;
+	border-radius: 50%;
+	animation: spin 0.8s linear infinite;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+/* ==========================================================================
+   Flatpickr Calendar Styles - Simplified design
+   ========================================================================== */
 .flatpickr-calendar {
-  border: none !important;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
-  border-radius: 8px !important;
-  padding: 8px !important;
-  font-family: 'Roboto', sans-serif !important;
+	border: none !important;
+	border-radius: 10px !important;
+	padding: 0.5rem !important;
+	font-family: 'Poppins', sans-serif !important;
+	background: var(--white) !important; /* White background */
 }
 
 .flatpickr-day.selected {
-  background: #d71921 !important;
-  border-color: #d71921 !important;
+	background: var(--primary-color) !important;
+	border-color: var(--primary-color) !important;
+	color: var(--white) !important; /* White text */
 }
 
 .flatpickr-day:hover {
-  background: #ffeaeb !important;
-  border-color: #ffeaeb !important;
-  color: #d71921 !important;
+	background: rgba(22, 97, 175, 0.1) !important;
+	color: var(--primary-color) !important;
+}
+
+.flatpickr-day:focus {
+	outline: 2px solid var(--primary-color) !important;
+	outline-offset: -2px !important;
 }
 
 .flatpickr-day.selected:hover {
-  background: #c81218 !important;
-  color: white !important;
+	background: #c01018 !important;
+	color: var(--white) !important;
 }
 
 .flatpickr-months .flatpickr-month {
-  background-color: #d71921 !important;
-  color: white !important;
-  height: 50px !important;
-  border-radius: 8px 8px 0 0 !important;
+	background-color: var(--primary-color) !important;
+	color: var(--white) !important; /* White text */
+	height: 50px !important;
+	border-radius: 8px 8px 0 0 !important;
 }
 
 .flatpickr-current-month {
-  padding-top: 10px !important;
+	padding-top: 0.75rem !important;
 }
 
-.flatpickr-monthDropdown-months {
-  color: white !important;
+.flatpickr-months .flatpickr-prev-month, .flatpickr-months .flatpickr-next-month
+	{
+	color: var(--white) !important; /* White arrows */
+	fill: var(--white) !important;
+	padding: 0.5rem !important;
+	top: 0.5rem !important;
 }
 
-.flatpickr-weekday {
-  color: #d71921 !important;
-  font-weight: 600 !important;
-}
-
-.return-date {
-  display: none;
-}
-
-/* Autocomplete styling */
+/* ==========================================================================
+   Autocomplete Styles - Simplified design
+   ========================================================================== */
 .autocomplete-container {
-  display: none;
-  position: absolute;
-  top: 100%;
-  left: 0;
-  z-index: 3000;
-  background: white;
-  border: 2px solid #e0e0e0;
-  border-radius: 6px;
-  max-height: 250px;
-  overflow-y: auto;
-  width: 100%;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-  margin-top: 2px;
+	display: none;
+	position: absolute;
+	top: 100%;
+	left: 0;
+	z-index: 3000;
+	background: var(--white); /* White background */
+	border: 1px solid #e8e8e8;
+	border-radius: var(--border-radius);
+	max-height: 250px;
+	overflow-y: auto;
+	width: 100%;
+	margin-top: 0.1875rem;
+}
+
+.autocomplete-container::-webkit-scrollbar {
+	width: 8px;
+}
+
+.autocomplete-container::-webkit-scrollbar-thumb {
+	background: var(--primary-color);
+	border-radius: 4px;
 }
 
 .autocomplete-container ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+	list-style: none;
+	padding: 0;
+	margin: 0;
 }
 
 .autocomplete-item {
-  padding: 12px 16px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  border-bottom: 1px solid #f0f0f0;
+	padding: 0.625rem 0.875rem;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	border-bottom: 1px solid #f0f0f0;
+	font-size: 0.9rem;
+	color: var(--secondary-color);
 }
 
 .autocomplete-item:hover, .autocomplete-item:focus {
-  background: #fff1f1;
-  outline: none;
+	background: #f0f8ff; /* Light blue-white hover */
+	outline: none;
+}
+
+.autocomplete-item.active {
+	background: var(--primary-color);
+	color: var(--white); /* White text */
 }
 
 .autocomplete-item:last-child {
-  border-bottom: none;
+	border-bottom: none;
 }
 
 .form-control.loading {
-  background-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d71921' stroke-width='2'%3E%3Ccircle cx='12' cy='12' r='10' opacity='0.2'/%3E%3Cpath d='M12 2a10 10 0 0 1 10 10'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 16px center;
-  background-size: 24px;
-  pointer-events: none;
+	background-image:
+		url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d71921' stroke-width='2'%3E%3Ccircle cx='12' cy='12' r='10' opacity='0.2'/%3E%3Cpath d='M12 2a10 10 0 0 1 10 10'/%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	background-position: right 18px center;
+	background-size: 18px;
+	pointer-events: none;
 }
 
 .autocomplete-container .error {
-  padding: 16px;
-  color: #d71921;
-  font-size: 0.9rem;
-  text-align: center;
+	padding: 1rem;
+	color: var(--danger-color);
+	font-size: 0.85rem;
+	text-align: center;
 }
 
 .error-text {
-  color: #d71921;
-  font-size: 0.85rem;
-  margin-top: 5px;
-  display: block;
-  min-height: 1rem;
+	color: var(--danger-color);
+	font-size: 0.8rem;
+	margin-top: 0.3125rem;
+	display: block;
+	min-height: 1rem;
 }
 
-/* Responsive styling */
-@media (max-width: 992px) {
-  .search-content {
-    padding: 25px;
-  }
-  .search-card {
-    padding: 20px;
-  }
+/* ==========================================================================
+   Additional Button Styles - Simplified design
+   ========================================================================== */
+.btn-secondary, .btn-primary, .btn-danger {
+	padding: 0.5rem 1.125rem;
+	border-radius: var(--border-radius);
+	font-weight: 600;
+	transition: all 0.3s ease;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	font-size: 0.85rem;
 }
 
-@media (max-width: 768px) {
-  .search-bg {
-    height: 180px;
-  }
-  .search-header h1 {
-    font-size: 1.8rem;
-  }
-  .search-header p {
-    font-size: 1rem;
-  }
-  .form-row .col {
-    flex: 1 0 100%;
-  }
+.btn-secondary {
+	background-color: var(--white); /* White background */
+	color: var(--neutral-gray);
+	border: 2px solid var(--neutral-gray);
+	padding: 0.4375rem 1rem;
 }
 
-/* High contrast mode support */
-@media (prefers-contrast: high) {
-  .search-btn {
-    border: 2px solid #000;
-  }
-  .form-control, .form-select {
-    border-color: #000;
-  }
-  .autocomplete-container {
-    border-color: #000;
-  }
+.btn-secondary:hover {
+	background-color: var(--neutral-gray);
+	color: var(--white); /* White text */
+}
+
+.btn-primary {
+	background-color: #0062cc;
+	border-color: #0062cc;
+	color: var(--white); /* White text */
+}
+
+.btn-danger {
+	background-color: var(--danger-color);
+	border-color: var(--danger-color);
+	color: var(--white); /* White text */
+}
+
+.btn-primary:hover, .btn-danger:hover {
+	filter: brightness(90%);
+}
+
+/* ==========================================================================
+   High Contrast Mode Support - Accessibility
+   ========================================================================== */
+@media ( prefers-contrast : high) {
+	.search-btn {
+		border: 2px solid var(--primary-color);
+	}
+	.form-control {
+		border-color: var(--neutral-gray);
+	}
+	.autocomplete-container {
+		border-color: var(--neutral-gray);
+	}
+}
+
+/* ==========================================================================
+   Responsive Design - Adjusted for alignment
+   ========================================================================== */
+@media ( max-width : 992px) {
+	.search-content {
+		padding: calc(var(--spacing-unit)* 1.5625);
+	}
+	.search-card {
+		padding: calc(var(--spacing-unit)* 1.25);
+	}
+	.form-row {
+		flex-wrap: wrap;
+	}
+	.form-row .col {
+		flex: 1 0 45%;
+	}
+}
+
+@media ( max-width : 768px) {
+	.search-bg {
+		min-height: 9.375rem;
+	}
+	.search-header h1 {
+		font-size: 1.7rem;
+	}
+	.search-header p {
+		font-size: 0.95rem;
+	}
+	.form-row {
+		flex-direction: column;
+		gap: 0.75rem;
+	}
+	.form-row .col {
+		flex: 1 0 100%;
+	}
+	.swap-btn-container {
+		width: 100%;
+		margin: 0.3125rem auto 0.75rem;
+		justify-content: center;
+	}
+	.swap-btn {
+		width: 44px;
+		height: 44px;
+		font-size: 1.3rem;
+	}
+	.search-btn-container {
+		justify-content: center;
+	}
+	.search-btn {
+		width: 100%;
+		max-width: 280px;
+		margin: 0.625rem auto;
+		padding: 0.5rem 1rem;
+	}
+}
+
+@media ( max-width : 480px) {
+	.search-content {
+		padding: calc(var(--spacing-unit)* 1.25);
+	}
+	.search-card {
+		padding: var(--spacing-unit);
+	}
+	.search-header h1 {
+		font-size: 1.5rem;
+	}
+	.form-control {
+		font-size: 0.9rem;
+	}
+}
+
+/* ==========================================================================
+   Dark Mode Support - Lightened with white emphasis
+   ========================================================================== */
+@media ( prefers-color-scheme : dark) {
+	body {
+		background: #f0f8ff; /* Very light blue-white */
+		color: var(--secondary-color);
+	}
+	.search-container, .search-card {
+		background: var(--white); /* White background */
+	}
+	.form-control {
+		background: var(--white);
+		color: var(--secondary-color);
+		border-color: #d0e0ff; /* Light blue border */
+	}
+	.search-btn {
+		background: #1a73e8;
+	}
+	.swap-btn {
+		background: var(--white);
+		color: var(--secondary-color);
+		border-color: #d0e0ff;
+	}
+	.autocomplete-container {
+		background: var(--white);
+		border-color: #d0e0ff;
+	}
+	.autocomplete-item {
+		color: var(--secondary-color);
+	}
+	.autocomplete-item:hover, .autocomplete-item:focus {
+		background: #e6f0ff; /* Light blue-white hover */
+	}
+}
+
+/* ==========================================================================
+   Reduced Motion Support
+   ========================================================================== */
+@media ( prefers-reduced-motion : reduce) {
+	.swap-btn, .search-btn, .autocomplete-item {
+		transition: none;
+	}
+	
+	@keyframes fadeIn {from { opacity:0;
+		
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+.search-btn.loading::after {
+	animation: none;
+}
+
+}
+
+/* ==========================================================================
+   Animations - Optimized for performance
+   ========================================================================== */
+
+@keyframes fadeIn {from { opacity:0;
+	transform: translateY(0.5rem);
+}
+
+to {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+}
+
+@keyframes spin {to { transform:translate(-50%, -50%)rotate(360deg);
+	
+}
 }
