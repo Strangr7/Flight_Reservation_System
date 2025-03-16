@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import com.flightreservation.DTO.FlightResultOneWay;
 import com.flightreservation.DTO.FlightResultRoundTrip;
+import com.flightreservation.DTO.SuggetedDestination;
 import com.flightreservation.model.BaggageRules;
 import com.flightreservation.model.Classes;
 import com.flightreservation.model.Flights;
@@ -237,10 +238,46 @@ public class FlightDAO {
 		// Return the round-trip result
 		return new FlightResultRoundTrip(filteredOutbound, filteredReturn);
 	}
-	
-	//CRUD for the flights
-	
-	//sorting fot flights
-	
+
+	// CRUD for the flights
+
+	// sorting fot flights
+
+	/**
+	 * Fetches 5 random flights with different destinations from a given departure
+	 * airport.
+	 * 
+	 * @param departureAirportCode The code of the departure airport (e.g., "YYZ").
+	 * @return
+	 * @return A list of FlightResultOneWay objects with unique destinations.
+	 */
+
+	public List<SuggetedDestination> getSuggestedDestination(String departureAirportCode) {
+		List<SuggetedDestination> suggestions = new ArrayList<>();
+		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+
+			// Step 1: Fetch all flights from the departure airport
+
+			String hql = "SELECT f FROM Flights f" + "LEFT JOIN f.departureAirport dep"
+					+ "WHERE dep.airportCode = :departureAirportCode";
+
+			Query<Flights> flights = session.createQuery(hql, Flights.class);
+			flights.setParameter("departureAirportCode", departureAirportCode);
+			List<Flights> flightsList = flights.getResultList();
+
+			if (flightsList.isEmpty()) {
+				return Collections.emptyList();
+			}
+			
+			// Step 2: Randomly select 6 flights with unique destinations
+			
+
+			return suggestions;
+
+		} catch (Exception e) {
+			logger.error("Error fetching random suggested destinations: {}", e.getMessage(), e);
+			return suggestions;
+		}
+	}
 
 }

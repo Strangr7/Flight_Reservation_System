@@ -54,7 +54,7 @@ public class FlightResultOneWay {
 	 * @return The Flights object containing flight details
 	 */
 	public Flights getFlight() {
-		return flight;	
+		return flight;
 	}
 
 	/**
@@ -213,7 +213,7 @@ public class FlightResultOneWay {
 		public void setBaggageRules(BaggageRules baggageRules) {
 			this.baggageRules = baggageRules;
 		}
-		
+
 		public void setAvailableSeats(int availableSeats) {
 			this.availableSeats = availableSeats;
 		}

@@ -33,18 +33,23 @@ public class Airports {
 	@NotNull(message = "Country cannot be empty!!")
 	@Column(name = "country", length = 100)
 	private String country;
+	
+	@NotNull
+	@Column(name= "airport_image")
+	private String airportImage;
 
 	// Default constructor
 	public Airports() {
 	}
 
 	// Parameterized constructor
-	public Airports(int airportId, String airportCode, String airportName, String city, String country) {
+	public Airports(int airportId, String airportCode, String airportName, String city, String country, String airportimage) {
 		this.airportId = airportId;
 		this.airportCode = airportCode;
 		this.airportName = airportName;
 		this.city = city;
 		this.country = country;
+		this.airportImage = airportimage;
 	}
 
 	// Getters and Setters
@@ -87,6 +92,15 @@ public class Airports {
 	public void setCountry(String country) {
 		this.country = country;
 	}
+	
+	public String getAirportImage() {
+		return airportImage;
+	}
+	
+	public void setAirportImage(String airportImage) {
+		this.airportImage = airportImage;
+	}
+	
 
 	@Override
 	public String toString() {
