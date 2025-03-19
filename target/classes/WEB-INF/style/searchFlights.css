@@ -73,20 +73,20 @@ body {
    Search Container Styles - Simplified design
    ========================================================================== */
 .search-container {
-	max-width: 1450px; margin : calc( var( --spacing-unit) * 1.5625) auto;
-		padding: calc(var(--spacing-unit) * 1.5);
+	max-width: 1450px;
+	margin: calc(var(--spacing-unit)* 1.5625) auto;
+	padding: calc(var(--spacing-unit)* 1.5);
 	background: var(--white); /* White background */
 	border-radius: 10px;
 	overflow: hidden;
 	position: relative;
-	margin: calc(var(--spacing-unit)* 1.5625) auto;
 }
 
 .search-bg {
 	position: absolute;
 	top: 0;
 	left: 0;
-	width: 100%;	
+	width: 100%;
 	min-height: 15rem;
 	background: var(--white)
 		url("https://wallpapers.com/images/high/plane-desktop-dnc62a0eoyniwrfl.webp")
@@ -94,22 +94,15 @@ body {
 	z-index: 1;
 }
 
-/* .search-bg::before {
-	content: '';
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	z-index: 1;
-} */
-
 .search-content {
 	position: relative;
 	z-index: 2;
 	padding: calc(var(--spacing-unit)* 1.875);
 }
 
+/* ==========================================================================
+   Search Header Styles
+   ========================================================================== */
 .search-header {
 	text-align: center;
 	margin-bottom: calc(var(--spacing-unit)* 1.5625);
@@ -133,68 +126,27 @@ body {
 	letter-spacing: 0.3px;
 }
 
-/* Where to Next Section */
+/* ==========================================================================
+   Where to Next Section Styles
+   ========================================================================== */
 .where-to-next {
-    margin-top: 3rem;
-    padding: 2rem 0;
+    margin: 2rem 0;
 }
-
-.where-to-next .section-title {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #333;
-    margin-bottom: 0.5rem;
-}
-
-.where-to-next .section-subtitle {
-    font-size: 1.1rem;
-    color: #666;
-    margin-bottom: 2rem;
-}
-
-.destination-card {
-    background-color: #fff;
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    cursor: pointer;
-}
-
-.destination-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-}
-
-.destination-img {
-    width: 100%;
-    height: 200px;
+.card-img-top {
+    height: 150px;
     object-fit: cover;
 }
-
-.destination-info {
+.card-body {
     padding: 1rem;
 }
-
-.destination-info h3 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-    color: #333;
-}
-
-.destination-info p {
-    font-size: 1rem;
-    color: #666;
-    margin-bottom: 0.5rem;
-}
-
-.destination-info .price {
+.card-title {
     font-size: 1.1rem;
-    font-weight: 600;
-    color: #004073;
+    margin-bottom: 0.5rem;
 }
-
+.card-text {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
 /* ==========================================================================
    Form Styles - Aligned labels and simplified design
    ========================================================================== */
@@ -219,7 +171,6 @@ body {
 
 .form-control {
 	padding: 0.625rem 2.5rem 0.625rem 0.75rem;
-	position: relative;
 	border: 1px solid #e8e8e8;
 	border-radius: var(--border-radius);
 	font-size: 0.95rem;
@@ -417,7 +368,7 @@ body {
 	position: absolute;
 	top: 100%;
 	left: 0;
-	z-index: 3000;
+	z-index: 3001; /* Above search-bg and other content */
 	background: var(--white); /* White background */
 	border: 1px solid #e8e8e8;
 	border-radius: var(--border-radius);
@@ -530,6 +481,106 @@ body {
 	filter: brightness(90%);
 }
 
+
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+    .where-to-next-section {
+        margin: calc(var(--spacing-unit) * 2) auto;
+        padding: calc(var(--spacing-unit) * 1.5);
+    }
+
+    .where-to-next-cards.custom-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+
+    .where-to-next-cards .card-img-top {
+        height: 120px;
+    }
+}
+
+@media (max-width: 768px) {
+    .where-to-next-section {
+        padding: calc(var(--spacing-unit) * 1);
+    }
+
+    .where-to-next-cards.custom-grid {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+
+    .where-to-next-cards .card-img-top {
+        height: 100px;
+    }
+}
+
+@media (max-width: 480px) {
+    .section-title {
+        font-size: 1.5rem;
+    }
+
+    .where-to-next-from {
+        max-width: 100%;
+    }
+
+    .where-to-next-cards.custom-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+
+    .where-to-next-cards .card-img-top {
+        height: 90px;
+    }
+
+    .where-to-next-cards .card-title {
+        font-size: 1rem;
+    }
+
+    .where-to-next-cards .card-text {
+        font-size: 0.8rem;
+    }
+
+    .where-to-next-cards .card-text.price {
+        font-size: 0.85rem;
+    }
+
+    .where-to-next-cards .btn-primary {
+        font-size: 0.8rem;
+        padding: 0.3rem 0.6rem;
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .where-to-next-section {
+        background: #2c2c2c;
+    }
+
+    .where-to-next-cards .card {
+        background: #333;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .where-to-next-cards .card-title {
+        color: #e0e0e0;
+    }
+
+    .where-to-next-cards .card-text {
+        color: #b0b0b0;
+    }
+
+    .where-to-next-cards .card-text.price {
+        color: #fff;
+        background: #444;
+    }
+
+    .where-to-next-from .form-control {
+        background: #444;
+        color: #e0e0e0;
+        border-color: #555;
+    }
+
+    .where-to-next-from .form-control:focus {
+        border-color: var(--primary-color);
+    }
+}
 /* ==========================================================================
    High Contrast Mode Support - Accessibility
    ========================================================================== */
@@ -599,6 +650,7 @@ body {
 		margin: 0.625rem auto;
 		padding: 0.5rem 1rem;
 	}
+	
 }
 
 @media ( max-width : 480px) {
@@ -661,10 +713,11 @@ body {
 	}
 	
 	@keyframes fadeIn {from { opacity:0;
-		
+		transform: translateY(0.5rem);
 	}
 	to {
 		opacity: 1;
+		transform: translateY(0);
 	}
 }
 

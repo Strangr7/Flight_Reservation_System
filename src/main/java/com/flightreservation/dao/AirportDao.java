@@ -22,7 +22,7 @@ public class AirportDao {
 	private static final String API_KEY = "64886dd092dda154e9b82de5fc7225a1"; 
 	private static final String API_URL = "http://api.aviationstack.com/v1/airports?access_key=" + API_KEY;
 
-	// Fetch all airports (unchanged)
+	// Fetch all airports 
 	public List<Airports> fetchAllAirports() {
 		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
 			String hql = "FROM Airports";
@@ -34,7 +34,7 @@ public class AirportDao {
 		}
 	}
 
-	// Search airports (unchanged)
+	// Search airports
 	public List<Airports> searchAirports(String term) {
 		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
 			String hql = "FROM Airports WHERE LOWER(airportCode) LIKE :term OR LOWER(city) LIKE :term OR LOWER(country) LIKE :term";
@@ -48,6 +48,10 @@ public class AirportDao {
 			return null;
 		}
 	}
+	
+	
+	//add airport
+	
 
 	// Import airports from API with pagination (for one-time use)
 	public void importAirportsFromAPI() {

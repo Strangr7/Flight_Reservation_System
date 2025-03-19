@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import com.flightreservation.DTO.FlightResultOneWay;
 import com.flightreservation.DTO.FlightResultRoundTrip;
 import com.flightreservation.DTO.SuggetedDestination;
+import com.flightreservation.model.Airports;
 import com.flightreservation.model.BaggageRules;
 import com.flightreservation.model.Classes;
 import com.flightreservation.model.Flights;
@@ -244,39 +245,83 @@ public class FlightDAO {
 	// sorting fot flights
 
 	/**
-	 * Fetches 5 random flights with different destinations from a given departure
-	 * airport.
-	 * 
-	 * @param departureAirportCode The code of the departure airport (e.g., "YYZ").
-	 * @return
-	 * @return A list of FlightResultOneWay objects with unique destinations.
+	 * Fetches up to 6 random suggested destinations from a given departure airport
+	 * code. Ensures destinations are unique by grouping on destination airport ID.
+	 *
+	 * @param departureAirportCode The departure airport code (e.g., "YYZ").
+	 * @return A list of SuggestedDestination objects.
 	 */
 
-	public List<SuggetedDestination> getSuggestedDestination(String departureAirportCode) {
+	public List<SuggetedDestination> getSuggestedDestinationsByDeparture(String departureAirportCode) {
 		List<SuggetedDestination> suggestions = new ArrayList<>();
 		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
 
-			// Step 1: Fetch all flights from the departure airport
+			// Step 1: Fetch up to 6 random flights with unique destinations
+			String sql = """
+					    SELECT f.*
+					    FROM Flights f
+					    JOIN Airports dep ON f.departure_airport_id = dep.airport_id
+					    WHERE dep.airport_code = :departureAirportCode
+					    AND f.flight_id = (
+					        SELECT f_inner.flight_id
+					        FROM Flights f_inner
+					        WHERE f_inner.destination_airport_id = f.destination_airport_id
+					        ORDER BY RAND()
+					        LIMIT 1
+					    )
+					    LIMIT 6
+					""";
 
-			String hql = "SELECT f FROM Flights f" + "LEFT JOIN f.departureAirport dep"
-					+ "WHERE dep.airportCode = :departureAirportCode";
+			logger.debug("Executing native SQL query: {}", sql);
+			Query<Flights> flightQuery = session.createNativeQuery(sql, Flights.class);
+			flightQuery.setParameter("departureAirportCode", departureAirportCode);
 
-			Query<Flights> flights = session.createQuery(hql, Flights.class);
-			flights.setParameter("departureAirportCode", departureAirportCode);
-			List<Flights> flightsList = flights.getResultList();
-
-			if (flightsList.isEmpty()) {
+			List<Flights> selectedFlights = flightQuery.getResultList();
+			if (selectedFlights.isEmpty()) {
+				logger.warn("No flights found for departure airport code: {}", departureAirportCode);
 				return Collections.emptyList();
 			}
-			
-			// Step 2: Randomly select 6 flights with unique destinations
-			
 
+			// Step 2: Fetch cheapest prices for the selected flights
+			List<Integer> flightIds = selectedFlights.stream().map(Flights::getFlightId).collect(Collectors.toList());
+
+			String priceHql = """
+					    SELECT fp.flight.flightId, MIN(fp.basePrice + fp.dynamicPrice)
+					    FROM FlightPrices fp
+					    WHERE fp.flight.flightId IN :flightIds
+					    GROUP BY fp.flight.flightId
+					""";
+
+			Query<Object[]> priceQuery = session.createQuery(priceHql, Object[].class);
+			priceQuery.setParameter("flightIds", flightIds);
+			List<Object[]> priceResults = priceQuery.getResultList();
+			Map<Integer, Double> priceMap = priceResults.stream()
+					.collect(Collectors.toMap(row -> (Integer) row[0], row -> (Double) row[1]));
+
+			// Step 3: Build SuggestedDestination objects
+			for (Flights flight : selectedFlights) {
+				Airports destination = flight.getDestinationAirport();
+				if (destination != null) {
+					String destName = destination.getCity();
+					String destCode = destination.getAirportCode();
+					String depDate = flight.getDepartureTime() != null
+							? flight.getDepartureTime().toLocalDate().toString()
+							: LocalDate.now().plusDays(1).toString();
+					double flightPrice = priceMap.getOrDefault(flight.getFlightId(), 0.0);
+					String imageUrl = destination.getAirportImage() != null ? destination.getAirportImage()
+							: "/images/destinations/" + destination.getCity().toLowerCase().replace(" ", "-") + ".jpg";
+
+					SuggetedDestination suggestion = new SuggetedDestination(departureAirportCode, destName, destCode,
+							depDate, flightPrice, imageUrl);
+					suggestions.add(suggestion);
+				}
+			}
+			logger.info("Fetched {} suggested destinations for departure={}", suggestions.size(), departureAirportCode);
 			return suggestions;
 
 		} catch (Exception e) {
-			logger.error("Error fetching random suggested destinations: {}", e.getMessage(), e);
-			return suggestions;
+			logger.error("Error fetching suggested destinations: {}", e.getMessage(), e);
+			return suggestions; // Return partial results if any
 		}
 	}
 

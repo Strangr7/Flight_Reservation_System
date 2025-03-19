@@ -107,14 +107,6 @@
 					class="btn btn-secondary">Bookings</a>
 			</div>
 		</div>
-
-		<div class="">
-			<div class="">
-				<h2>Where to next?</h2>
-				<p>6 grid layout</p>
-			</div>
-
-		</div>
 		<div class="">
 			<div class="">
 				<h2>Explore packages</h2>
@@ -122,6 +114,36 @@
 			</div>
 
 		</div>
+
+		<div class="where-to-next">
+			<h2 class="section-title">Where to next?</h2>
+			<div class="row mb-3" id="where-to-next-form-row">
+				<div class="col">
+					<div class="departure-input-container">
+						<label for="suggestionDepartureCode" class="form-label">From</label>
+						<input type="text" class="form-control"
+							id="suggestionDepartureCode" placeholder="City or Airport"
+							aria-describedby="suggestionDepartureError" autocomplete="off"
+							value="Toronto, Pearson International - YYZ"> <input
+							type="hidden" id="suggestionDepartureCodeHidden"
+							data-airport-code="YYZ" data-selected="true">
+						<div id="suggestionDepartureAutocomplete"
+							class="autocomplete-container"></div>
+						<span id="suggestionDepartureError" class="error-text"
+							aria-live="polite"></span>
+					</div>
+				</div>
+			</div>
+			<div class="row" id="suggestionsContainer">
+				<div class="col-12 text-center py-5">
+					<div class="spinner-border text-primary" role="status">
+						<span class="visually-hidden">Loading destinations...</span>
+					</div>
+					<p class="mt-3 text-muted">Loading popular destinations...</p>
+				</div>
+			</div>
+		</div>
+		
 		<div class="">
 			<div class="">
 				<h2>Why us?</h2>
@@ -145,6 +167,8 @@
 
 	<!-- Custom JS for flight search functionality -->
 	<script src="<%=request.getContextPath()%>/script/searchFlights.js"></script>
+	<script
+		src="<%=request.getContextPath()%>/script/suggestedDestinations.js"></script>
 
 
 </body>

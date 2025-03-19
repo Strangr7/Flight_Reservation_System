@@ -55,6 +55,7 @@ public class SearchFlightsOneWay extends HttpServlet {
 			String departureAirportCode = request.getParameter("departureAirportCode");
 			String destinationAirportCode = request.getParameter("destinationAirportCode");
 			String departureDateStr = request.getParameter("departureDate");
+			String sortBy = request.getParameter("sortBy"); 
 
 			// Step 2: Validate that all required parameters are present
 			if (departureAirportCode == null || destinationAirportCode == null || departureDateStr == null) {
@@ -70,10 +71,10 @@ public class SearchFlightsOneWay extends HttpServlet {
 
 			// Step 4: Search for flights using the FlightService
 			List<FlightResultOneWay> flights = flightService.searchFlights(departureAirportCode, destinationAirportCode,
-					departureDate);
+					departureDate,sortBy);
 			// Log the search attempt for debugging/tracking
-			logger.info("Searching with departureAirportCode={}, destinationAirportCode={}, departureDate={}",
-					departureAirportCode, destinationAirportCode, departureDate);
+			logger.info("Searching with departureAirportCode={}, destinationAirportCode={}, departureDate={},sortBy={}",
+					departureAirportCode, destinationAirportCode, departureDate,sortBy);
 			HttpSession session = request.getSession();
 
 			session.setAttribute("flights", flights);
@@ -107,6 +108,7 @@ public class SearchFlightsOneWay extends HttpServlet {
 				request.setAttribute("departureAirportCode", departureAirportCode);
 				request.setAttribute("destinationAirportCode", destinationAirportCode);
 				request.setAttribute("departureDate", departureDate);
+				request.setAttribute("sortBy", sortBy);
 				// Forward to a JSP page to display the flight results
 				request.getRequestDispatcher("/WEB-INF/views/flightResultsOneWay.jsp").forward(request, response);
 			}

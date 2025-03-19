@@ -3,6 +3,7 @@ C:\FSDM\TERM3\java\team-project\Flight_Reservation_System\src\main\java\com\flig
 C:\FSDM\TERM3\java\team-project\Flight_Reservation_System\src\main\java\com\flightreservation\DTO\FlightResultOneWay.java
 C:\FSDM\TERM3\java\team-project\Flight_Reservation_System\src\main\java\com\flightreservation\dao\AirportDao.java
 C:\FSDM\TERM3\java\team-project\Flight_Reservation_System\src\main\java\com\flightreservation\model\Users.java
+C:\FSDM\TERM3\java\team-project\Flight_Reservation_System\src\main\java\com\flightreservation\controller\FlightController\GetSuggestedDestinations.java
 C:\FSDM\TERM3\java\team-project\Flight_Reservation_System\src\main\java\com\flightreservation\dao\BookingDAO.java
 C:\FSDM\TERM3\java\team-project\Flight_Reservation_System\src\main\java\com\flightreservation\util\DatabaseConnection.java
 C:\FSDM\TERM3\java\team-project\Flight_Reservation_System\src\main\java\com\flightreservation\util\JsonUtil.java
@@ -25,6 +26,7 @@ C:\FSDM\TERM3\java\team-project\Flight_Reservation_System\src\main\java\com\flig
 C:\FSDM\TERM3\java\team-project\Flight_Reservation_System\src\main\java\com\flightreservation\model\Flights.java
 C:\FSDM\TERM3\java\team-project\Flight_Reservation_System\src\main\java\com\flightreservation\model\Airports.java
 C:\FSDM\TERM3\java\team-project\Flight_Reservation_System\src\main\java\com\flightreservation\service\FlightService.java
+C:\FSDM\TERM3\java\team-project\Flight_Reservation_System\src\main\java\com\flightreservation\DTO\SuggetedDestination.java
 C:\FSDM\TERM3\java\team-project\Flight_Reservation_System\src\main\java\com\flightreservation\controller\FlightController\SearchFlightsOneWay.java
 C:\FSDM\TERM3\java\team-project\Flight_Reservation_System\src\main\java\com\flightreservation\model\enums\BookingStatus.java
 C:\FSDM\TERM3\java\team-project\Flight_Reservation_System\src\main\java\com\flightreservation\service\MealService.java

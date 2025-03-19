@@ -23,36 +23,7 @@
 	href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap"
 	rel="stylesheet">
 <link href="style/flightResultsOneWay.css" rel="stylesheet">
-<style>
-.fare-option p {
-	margin-bottom: 5px;
-}
 
-.baggage-info, .seats-info {
-	font-size: 0.9em;
-	color: #666;
-}
-
-.flight-details-dropdown {
-	display: none;
-	transition: all 0.3s ease;
-}
-
-.flight-details-dropdown.active {
-	display: block;
-}
-
-.fare-option {
-	padding: 10px;
-}
-
-.timeline-sidebar {
-	display: none;
-} /* Hidden by default */
-.timeline-sidebar.visible {
-	display: block;
-}
-</style>
 </head>
 <body>
 	<div id="loading">
@@ -64,6 +35,28 @@
 	<div id="flightContainer" style="display: none;">
 		<div class="container">
 			<h2 class="header-title gradient-header">Explore Your Flights</h2>
+			<form action="<%=request.getContextPath()%>/SearchFlights"
+				method="get" class="sort-form mb-3">
+				<input type="hidden" name="departureAirportCode"
+					value="<%=request.getAttribute("departureAirportCode")%>">
+				<input type="hidden" name="destinationAirportCode"
+					value="<%=request.getAttribute("destinationAirportCode")%>">
+				<input type="hidden" name="departureDate"
+					value="<%=request.getAttribute("departureDate")%>"> <label
+					for="sortBy" class="me-2">Sort by:</label> <select id="sortBy"
+					name="sortBy" class="form-select d-inline-block w-auto"
+					onchange="this.form.submit()">
+					<option value="best"
+						<%="best".equals(request.getParameter("sortBy")) ? "selected" : ""%>>Best
+						Flight</option>
+					<option value="fastest"
+						<%="fastest".equals(request.getParameter("sortBy")) ? "selected" : ""%>>Fastest
+						Flight</option>
+					<option value="cheapest"
+						<%="cheapest".equals(request.getParameter("sortBy")) ? "selected" : ""%>>Cheapest
+						Flight</option>
+				</select>
+			</form>
 			<p class="header-subtitle">
 				From <strong><%=request.getAttribute("departureAirportCode")%></strong>
 				to <strong><%=request.getAttribute("destinationAirportCode")%></strong>
@@ -72,7 +65,6 @@
 
 			<div class="content-wrapper">
 				<div class="row flex-nowrap content-with-sidebar">
-					<!-- Left: Filters -->
 					<aside class="col-md-3 filters-sidebar" aria-label="Flight Filters">
 						<div class="filter-card card">
 							<h3 class="filter-title">Filters</h3>
@@ -100,7 +92,6 @@
 						</div>
 					</aside>
 
-					<!-- Center: Flight Results -->
 					<main class="col-md-6 results-main" role="main">
 						<%
 						List<FlightResultOneWay> flights = (List<FlightResultOneWay>) request.getAttribute("flights");
@@ -190,7 +181,6 @@
 										aria-controls="timelineSidebar">View Timeline</button>
 								</div>
 							</div>
-							<!-- Flight Details Dropdown -->
 							<div class="flight-details-dropdown"
 								id="flightDetailsDropdown<%=flightResult.getFlight().getFlightId()%>"
 								aria-hidden="true">
@@ -216,9 +206,7 @@
 											</p>
 											<p>
 												from CAD
-												<%=String.format("%.2f", pc.getDynamicPrice())%>
-												
-											</p>
+												<%=String.format("%.2f", pc.getDynamicPrice())%></p>
 											<p class="baggage-info">
 												<%
 												if (pc.getBaggageRules() != null) {
@@ -267,7 +255,6 @@
 						%>
 					</main>
 
-					<!-- Right: Timeline -->
 					<aside class="col-md-3 timeline-sidebar" id="timelineSidebar"
 						aria-label="Flight Timeline">
 						<div class="timeline-card card">
@@ -293,7 +280,6 @@
 									data-flight-id="<%=flight.getFlight().getFlightId()%>"
 									style="display: none;">
 									<div class="timeline">
-										<!-- Departure -->
 										<div class="timeline-item">
 											<div class="timeline-dot"></div>
 											<div class="timeline-content">
@@ -301,30 +287,24 @@
 													Depart:
 													<%=flight.getFlight().getDepartureAirport() != null
 		? flight.getFlight().getDepartureAirport().getAirportCode()
-		: "N/A"%>
-												</p>
+		: "N/A"%></p>
 												<p class="timeline-time"><%=departureTime%></p>
-												<p class="timeline-details">
-													<%=flight.getFlight().getDepartureAirport() != null
+												<p class="timeline-details"><%=flight.getFlight().getDepartureAirport() != null
 		? flight.getFlight().getDepartureAirport().getAirportName()
-		: "Unknown"%>
-												</p>
+		: "Unknown"%></p>
 											</div>
 										</div>
-
-										<!-- Dynamic Stops -->
 										<%
 										if (flight.getStopCount() > 0) {
 											Instant currentTime = departureInstant;
 											for (Stops stop : flight.getStops()) {
 												if (stop != null && stop.getStopAirport() != null) {
-											// Calculate stop arrival and departure based on stopDuration
 											Instant stopArrival = currentTime.plus(Duration.ofMinutes(stop.getStopDuration()));
-											Instant stopDeparture = stopArrival.plus(Duration.ofMinutes(30)); // Assume 30-min min layover
+											Instant stopDeparture = stopArrival.plus(Duration.ofMinutes(30));
 											String stopArrivalTime = timeFormat24.format(Date.from(stopArrival));
 											String stopDepartureTime = timeFormat24.format(Date.from(stopDeparture));
 											String layoverDuration = String.format("%dm", stop.getStopDuration());
-											currentTime = stopDeparture; // Update for next segment
+											currentTime = stopDeparture;
 										%>
 										<div class="timeline-item">
 											<div class="timeline-dot stop-dot"></div>
@@ -351,8 +331,6 @@
 										<%
 										}
 										%>
-
-										<!-- Arrival -->
 										<div class="timeline-item">
 											<div class="timeline-dot"></div>
 											<div class="timeline-content">
@@ -360,18 +338,13 @@
 													Arrive:
 													<%=flight.getFlight().getDestinationAirport() != null
 		? flight.getFlight().getDestinationAirport().getAirportCode()
-		: "N/A"%>
-												</p>
+		: "N/A"%></p>
 												<p class="timeline-time"><%=arrivalTime%></p>
-												<p class="timeline-details">
-													<%=flight.getFlight().getDestinationAirport() != null
+												<p class="timeline-details"><%=flight.getFlight().getDestinationAirport() != null
 		? flight.getFlight().getDestinationAirport().getAirportName()
-		: "Unknown"%>
-												</p>
+		: "Unknown"%></p>
 											</div>
 										</div>
-
-										<!-- Total Duration -->
 										<div class="timeline-item">
 											<div class="timeline-content">
 												<p class="timeline-total-duration">
@@ -380,8 +353,6 @@
 											</div>
 										</div>
 									</div>
-
-									<!-- Additional Details -->
 									<div class="timeline-details-content"
 										data-flight-id="<%=flight.getFlight().getFlightId()%>">
 										<p>
@@ -414,9 +385,6 @@
 								}
 								%>
 							</div>
-
-
-
 							<div class="timeline-details-dropdown" id="timelineDetails"
 								aria-hidden="true">
 								<div class="timeline-details-content-wrapper"></div>
@@ -427,14 +395,10 @@
 			</div>
 		</div>
 	</div>
-	<script>window.contextPath = '<%=request.getContextPath()%>
-		';
+	<script>window.contextPath = '<%=request.getContextPath()%>';
 	</script>
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-
-	<!-- External JS -->
 	<script
 		src="<%=request.getContextPath()%>/script/flightResultsOneWay.js"></script>
 </body>

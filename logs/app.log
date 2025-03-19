@@ -3402,3 +3402,69 @@ java.lang.RuntimeException: Failed to fetch data: HTTP 401
 2025-03-13 11:34:50,241 [main] INFO  c.f.u.HibernateUtil - Hibernate SessionFactory initialized successfully.
 2025-03-13 11:34:50,335 [main] INFO  c.f.u.HibernateUtil - Database connectivity verified.
 2025-03-13 11:34:50,338 [main] INFO  c.f.u.HibernateTest - SUCCESS: Hibernate initialized successfully!
+2025-03-19 09:40:11,949 [main] INFO  c.f.u.HibernateUtil - SessionFactory is null or closed, reinitializing...
+2025-03-19 09:40:11,951 [main] INFO  c.f.u.HibernateUtil - Initializing Hibernate SessionFactory...
+2025-03-19 09:40:12,022 [main] INFO  o.h.Version - HHH000412: Hibernate ORM core version 6.2.1.Final
+2025-03-19 09:40:12,027 [main] INFO  o.h.c.Environment - HHH000406: Using bytecode reflection optimizer
+2025-03-19 09:40:12,470 [main] INFO  o.h.e.j.c.i.ConnectionProviderInitiator - HHH000130: Instantiating explicit connection provider: org.hibernate.hikaricp.internal.HikariCPConnectionProvider
+2025-03-19 09:40:12,494 [main] INFO  c.z.h.HikariDataSource - HikariPool-1 - Starting...
+2025-03-19 09:40:12,924 [main] INFO  c.z.h.HikariDataSource - HikariPool-1 - Start completed.
+2025-03-19 09:40:13,007 [main] INFO  SQL dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQLDialect, version: 8.0.39
+2025-03-19 09:40:13,590 [main] INFO  o.h.b.i.BytecodeProviderInitiator - HHH000021: Bytecode provider name : bytebuddy
+2025-03-19 09:40:13,785 [main] INFO  o.h.v.i.u.Version - HV000001: Hibernate Validator 8.0.0.Final
+2025-03-19 09:40:14,723 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2025-03-19 09:40:15,185 [main] INFO  c.f.u.HibernateUtil - Hibernate SessionFactory initialized successfully.
+2025-03-19 09:40:15,282 [main] INFO  c.f.u.HibernateUtil - Database connectivity verified.
+2025-03-19 09:40:15,529 [main] ERROR c.f.d.AirportDao - Error importing airports from API: Validation failed for classes [com.flightreservation.model.Airports] during persist time for groups [jakarta.validation.groups.Default, ]
+List of constraint violations:[
+	ConstraintViolationImpl{interpolatedMessage='must not be null', propertyPath=airportImage, rootBeanClass=class com.flightreservation.model.Airports, messageTemplate='{jakarta.validation.constraints.NotNull.message}'}
+]
+jakarta.validation.ConstraintViolationException: Validation failed for classes [com.flightreservation.model.Airports] during persist time for groups [jakarta.validation.groups.Default, ]
+List of constraint violations:[
+	ConstraintViolationImpl{interpolatedMessage='must not be null', propertyPath=airportImage, rootBeanClass=class com.flightreservation.model.Airports, messageTemplate='{jakarta.validation.constraints.NotNull.message}'}
+]
+	at org.hibernate.boot.beanvalidation.BeanValidationEventListener.validate(BeanValidationEventListener.java:151)
+	at org.hibernate.boot.beanvalidation.BeanValidationEventListener.onPreInsert(BeanValidationEventListener.java:81)
+	at org.hibernate.action.internal.EntityIdentityInsertAction.preInsert(EntityIdentityInsertAction.java:186)
+	at org.hibernate.action.internal.EntityIdentityInsertAction.execute(EntityIdentityInsertAction.java:75)
+	at org.hibernate.engine.spi.ActionQueue.execute(ActionQueue.java:657)
+	at org.hibernate.engine.spi.ActionQueue.addResolvedEntityInsertAction(ActionQueue.java:287)
+	at org.hibernate.engine.spi.ActionQueue.addInsertAction(ActionQueue.java:268)
+	at org.hibernate.engine.spi.ActionQueue.addAction(ActionQueue.java:326)
+	at org.hibernate.event.internal.AbstractSaveEventListener.addInsertAction(AbstractSaveEventListener.java:360)
+	at org.hibernate.event.internal.AbstractSaveEventListener.performSaveOrReplicate(AbstractSaveEventListener.java:274)
+	at org.hibernate.event.internal.AbstractSaveEventListener.performSave(AbstractSaveEventListener.java:180)
+	at org.hibernate.event.internal.AbstractSaveEventListener.saveWithGeneratedId(AbstractSaveEventListener.java:140)
+	at org.hibernate.event.internal.DefaultMergeEventListener.saveTransientEntity(DefaultMergeEventListener.java:300)
+	at org.hibernate.event.internal.DefaultMergeEventListener.entityIsTransient(DefaultMergeEventListener.java:222)
+	at org.hibernate.event.internal.DefaultMergeEventListener.merge(DefaultMergeEventListener.java:153)
+	at org.hibernate.event.internal.DefaultMergeEventListener.doMerge(DefaultMergeEventListener.java:143)
+	at org.hibernate.event.internal.DefaultMergeEventListener.onMerge(DefaultMergeEventListener.java:127)
+	at org.hibernate.event.internal.DefaultMergeEventListener.onMerge(DefaultMergeEventListener.java:81)
+	at org.hibernate.event.service.internal.EventListenerGroupImpl.fireEventOnEachListener(EventListenerGroupImpl.java:127)
+	at org.hibernate.internal.SessionImpl.fireMerge(SessionImpl.java:848)
+	at org.hibernate.internal.SessionImpl.merge(SessionImpl.java:834)
+	at com.flightreservation.dao.AirportDao.importAirportsFromAPI(AirportDao.java:92)
+	at com.flightreservation.dao.AirportDao.main(AirportDao.java:133)
+2025-03-19 09:45:22,416 [main] INFO  c.f.u.DatabaseConnection - Looking for .env at: C:\FSDM\TERM3\java\team-project\Flight_Reservation_System\.env
+2025-03-19 09:45:22,430 [main] INFO  c.f.u.EnvLoader - Loading environment variables from 'C:\FSDM\TERM3\java\team-project\Flight_Reservation_System\.env'
+2025-03-19 09:45:22,439 [main] INFO  c.f.u.EnvLoader - Successfully loaded 3 environment variables from 'C:\FSDM\TERM3\java\team-project\Flight_Reservation_System\.env'
+2025-03-19 09:45:22,439 [main] INFO  c.f.u.DatabaseConnection - Loaded DB_URL='jdbc:mysql://localhost:3306/flight_reservation', DB_USERNAME='flight_admin', DB_PASSWORD='StrongPassword123!'
+2025-03-19 09:45:22,440 [main] INFO  c.f.u.DatabaseConnection - Loaded database configuration successfully.
+2025-03-19 09:45:22,886 [main] INFO  c.f.u.DatabaseConnection - Database connection test successful!
+2025-03-19 09:45:22,889 [main] INFO  c.f.u.DatabaseConnection - Retrieving a database connection...
+2025-03-19 09:45:22,924 [main] INFO  c.f.u.DatabaseConnectionTest - SUCCESS: Database connection is established!
+2025-03-19 09:45:22,947 [main] INFO  c.f.u.HibernateUtil - SessionFactory is null or closed, reinitializing...
+2025-03-19 09:45:22,948 [main] INFO  c.f.u.HibernateUtil - Initializing Hibernate SessionFactory...
+2025-03-19 09:45:23,040 [main] INFO  o.h.Version - HHH000412: Hibernate ORM core version 6.2.1.Final
+2025-03-19 09:45:23,043 [main] INFO  o.h.c.Environment - HHH000406: Using bytecode reflection optimizer
+2025-03-19 09:45:23,390 [main] INFO  o.h.e.j.c.i.ConnectionProviderInitiator - HHH000130: Instantiating explicit connection provider: org.hibernate.hikaricp.internal.HikariCPConnectionProvider
+2025-03-19 09:45:23,402 [main] INFO  c.z.h.HikariDataSource - HikariPool-1 - Starting...
+2025-03-19 09:45:23,433 [main] INFO  c.z.h.HikariDataSource - HikariPool-1 - Start completed.
+2025-03-19 09:45:23,473 [main] INFO  SQL dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQLDialect, version: 8.0.39
+2025-03-19 09:45:24,129 [main] INFO  o.h.b.i.BytecodeProviderInitiator - HHH000021: Bytecode provider name : bytebuddy
+2025-03-19 09:45:24,271 [main] INFO  o.h.v.i.u.Version - HV000001: Hibernate Validator 8.0.0.Final
+2025-03-19 09:45:25,130 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2025-03-19 09:45:25,466 [main] INFO  c.f.u.HibernateUtil - Hibernate SessionFactory initialized successfully.
+2025-03-19 09:45:25,544 [main] INFO  c.f.u.HibernateUtil - Database connectivity verified.
+2025-03-19 09:45:25,546 [main] INFO  c.f.u.HibernateTest - SUCCESS: Hibernate initialized successfully!

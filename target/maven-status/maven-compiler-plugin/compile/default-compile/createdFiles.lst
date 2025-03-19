@@ -9,6 +9,7 @@ com\flightreservation\controller\BookingController\BookingConfirmation.class
 com\flightreservation\dao\MealDAO.class
 com\flightreservation\exception\InvalidFlightDataException.class
 com\flightreservation\controller\PassengerController\SavePassengerDetails.class
+com\flightreservation\DTO\SuggetedDestination.class
 com\flightreservation\util\HikariConnectionProvider.class
 com\flightreservation\model\Aircrafts.class
 com\flightreservation\service\MealService.class
@@ -47,6 +48,7 @@ com\flightreservation\controller\AirportController\GetAirports.class
 com\flightreservation\util\FlightClassesConverter.class
 com\flightreservation\util\ApiResponse.class
 com\flightreservation\dao\AirportDao.class
+com\flightreservation\controller\FlightController\GetSuggestedDestinations.class
 com\flightreservation\model\Classes.class
 com\flightreservation\service\AirportService.class
 com\flightreservation\controller\BookingController\ManageBooking.class

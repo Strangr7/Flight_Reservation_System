@@ -630,6 +630,35 @@ body {
 .timeline-details-content-wrapper p {
     margin: 0 0 0.3125rem 0;
 }
+.fare-option p {
+	margin-bottom: 5px;
+}
+
+.baggage-info, .seats-info {
+	font-size: 0.9em;
+	color: #666;
+}
+
+.flight-details-dropdown {
+	display: none;
+	transition: all 0.3s ease;
+}
+
+.flight-details-dropdown.active {
+	display: block;
+}
+
+.fare-option {
+	padding: 10px;
+}
+
+.timeline-sidebar {
+	display: none;
+}
+
+.timeline-sidebar.visible {
+	display: block;
+}
 
 /* Hidden by default, used for pre-rendering details */
 .timeline-details-content {

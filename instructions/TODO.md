@@ -9,3 +9,12 @@ TODO://
 
 
 
+=>admin panel(airports, flights, users,analysis)
+=>flights(admin should be able to add, edit and delete flight also should be able to see all the passenger and their info along with seat and meal)
+=>airports(admin should be able to add,edit and remove airports)
+=>users (admin should be able to see users and all their bookings)
+=> analysis()
+
+
+
+

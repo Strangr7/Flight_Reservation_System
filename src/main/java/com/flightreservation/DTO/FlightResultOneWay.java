@@ -1,4 +1,4 @@
-package com.flightreservation.DTO;
+	package com.flightreservation.DTO;
 
 import com.flightreservation.model.BaggageRules;
 import com.flightreservation.model.Flights;
