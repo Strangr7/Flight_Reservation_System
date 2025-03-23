@@ -1,13 +1,10 @@
 # Ignore build files
 /build/
 /target/
+
+# Log file
 /logs/
 *.log
-
-# Ignore IDE settings
-.classpath
-.project
-.settings/
 
 # Ignore compiled files
 *.class
@@ -36,12 +33,12 @@ local.properties
 # Typically, this file would be tracked if it contains build/dependency configurations:
 .project
 
+# Ignore IDE settings
+.classpath
+
 ### Java ###
 # Compiled class file
 *.class
-
-# Log file
-*.log
 
 # Package Files #
 *.jar
