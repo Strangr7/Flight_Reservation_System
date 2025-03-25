@@ -9,6 +9,8 @@ import com.flightreservation.model.Flights;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Comparator;
 import java.util.List;
 
@@ -45,17 +47,19 @@ public class FlightService {
 	}
 
 	/**
-	 * Searches for one-way flights based on departure and destination airports,
-	 * a departure date, and an optional sorting preference. Delegates the search
+	 * Searches for one-way flights based on departure and destination airports, a
+	 * departure date, and an optional sorting preference. Delegates the search
 	 * operation to FlightDAO and applies sorting based on the specified criteria.
 	 * 
-	 * @param departureAirportCode   The code of the departure airport (e.g., "JFK").
-	 * @param destinationAirportCode The code of the destination airport (e.g., "LAX").
+	 * @param departureAirportCode   The code of the departure airport (e.g.,
+	 *                               "JFK").
+	 * @param destinationAirportCode The code of the destination airport (e.g.,
+	 *                               "LAX").
 	 * @param departureDate          The date of departure for the flight search.
-	 * @param sortBy                 The sorting criteria ("fastest", "cheapest", or "best");
-	 *                               defaults to "best" if null.
-	 * @return A list of FlightResultOneWay objects sorted according to the sortBy parameter,
-	 *         empty if no flights are found.
+	 * @param sortBy                 The sorting criteria ("fastest", "cheapest", or
+	 *                               "best"); defaults to "best" if null.
+	 * @return A list of FlightResultOneWay objects sorted according to the sortBy
+	 *         parameter, empty if no flights are found.
 	 */
 	public List<FlightResultOneWay> searchFlights(String departureAirportCode, String destinationAirportCode,
 			LocalDate departureDate, String sortBy) {
@@ -71,20 +75,16 @@ public class FlightService {
 				}));
 				break;
 			case "cheapest":
-				flights.sort(Comparator.comparing(flight ->
-					flight.getPricesAndClasses().isEmpty() ?
-					Double.MAX_VALUE :
-					flight.getPricesAndClasses().get(0).getDynamicPrice()));
+				flights.sort(Comparator.comparing(flight -> flight.getPricesAndClasses().isEmpty() ? Double.MAX_VALUE
+						: flight.getPricesAndClasses().get(0).getDynamicPrice()));
 				break;
 			case "best":
 				// Custom "best" logic (e.g., balance of price and duration)
 				flights.sort(Comparator.comparing(flight -> {
-					Duration duration = Duration.between(
-						flight.getFlight().getDepartureTime(),
-						flight.getFlight().getArrivalTime());
-					double price = flight.getPricesAndClasses().isEmpty() ?
-						Double.MAX_VALUE :
-						flight.getPricesAndClasses().get(0).getDynamicPrice();
+					Duration duration = Duration.between(flight.getFlight().getDepartureTime(),
+							flight.getFlight().getArrivalTime());
+					double price = flight.getPricesAndClasses().isEmpty() ? Double.MAX_VALUE
+							: flight.getPricesAndClasses().get(0).getDynamicPrice();
 					return (duration.toMinutes() * 0.5) + (price * 0.5); // Example weighted score
 				}));
 				break;
@@ -94,15 +94,17 @@ public class FlightService {
 	}
 
 	/**
-	 * Searches for one-way flights based on departure and destination airports
-	 * and a departure date, with default sorting by "best". Delegates to the
-	 * overloaded searchFlights method with sortBy set to "best".
+	 * Searches for one-way flights based on departure and destination airports and
+	 * a departure date, with default sorting by "best". Delegates to the overloaded
+	 * searchFlights method with sortBy set to "best".
 	 * 
-	 * @param departureAirportCode   The code of the departure airport (e.g., "JFK").
-	 * @param destinationAirportCode The code of the destination airport (e.g., "LAX").
+	 * @param departureAirportCode   The code of the departure airport (e.g.,
+	 *                               "JFK").
+	 * @param destinationAirportCode The code of the destination airport (e.g.,
+	 *                               "LAX").
 	 * @param departureDate          The date of departure for the flight search.
-	 * @return A list of FlightResultOneWay objects sorted by "best" criteria,
-	 *         empty if no flights are found.
+	 * @return A list of FlightResultOneWay objects sorted by "best" criteria, empty
+	 *         if no flights are found.
 	 */
 	public List<FlightResultOneWay> searchFlights(String departureAirportCode, String destinationAirportCode,
 			LocalDate departureDate) {
@@ -115,8 +117,10 @@ public class FlightService {
 	 * a departure date, and a return date. Delegates the round-trip search to
 	 * FlightDAO.
 	 * 
-	 * @param departureAirportCode   The code of the departure airport (e.g., "JFK").
-	 * @param destinationAirportCode The code of the destination airport (e.g., "LAX").
+	 * @param departureAirportCode   The code of the departure airport (e.g.,
+	 *                               "JFK").
+	 * @param destinationAirportCode The code of the destination airport (e.g.,
+	 *                               "LAX").
 	 * @param departureDate          The date of the outbound flight.
 	 * @param returnDate             The date of the return flight.
 	 * @return A FlightResultRoundTrip object containing outbound and return flight
@@ -139,4 +143,39 @@ public class FlightService {
 	public List<SuggetedDestination> fetchSuggestedDestinations(String departureAirportCode) {
 		return flightDAO.getSuggestedDestinationsByDeparture(departureAirportCode);
 	}
+
+	/**
+	 * Retrieves the flight status for a given flight number and departure date.
+	 * 
+	 * @param flightNumber The flight number (e.g., "AA123").
+	 * @param dateStr      The departure date as a string in "yyyy-MM-dd" format.
+	 * @return The flight status, or an error message if invalid input or flight not
+	 *         found.
+	 */
+
+	public String getFlightStatus(String flightNumber, String dateStr) {
+		// Validate inputs
+		if (flightNumber == null || flightNumber.trim().isEmpty()) {
+
+			return "Error: Flight number is required";
+		}
+
+		LocalDate departureDate;
+		try {
+			departureDate = LocalDate.parse(dateStr, DateTimeFormatter.ISO_LOCAL_DATE);
+		} catch (DateTimeParseException e) {
+
+			return "Error: Invalid date format. Use yyyy-MM-dd";
+		}
+
+		// Fetch status from DAO
+		String status = flightDAO.fetchFlightStatus(flightNumber, departureDate);
+		if (status == null) {
+
+			return "Flight not found";
+		}
+
+		return status;
+	}
+
 }

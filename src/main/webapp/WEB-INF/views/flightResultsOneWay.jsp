@@ -1,3 +1,5 @@
+<%@page import="com.flightreservation.model.Airlines"%>
+<%@page import="com.flightreservation.service.AirlineService"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ page import="com.flightreservation.DTO.FlightResultOneWay"%>
@@ -34,6 +36,82 @@
 	</div>
 	<div id="flightContainer" style="display: none;">
 		<div class="container">
+			<!-- Edit Search Form from searchFlights.jsp -->
+			<div class="search-container mb-4">
+				<div class="search-bg"></div>
+				<div class="search-content">
+					<div class="search-card">
+						<h2 class="header-title gradient-header">Edit Your Search</h2>
+						<form id="flightSearchForm"
+							action="<%=request.getContextPath()%>/SearchFlights" method="get"
+							novalidate>
+							<div class="form-row row g-3 align-items-center">
+								<div class="col">
+									<div class="form-group">
+										<label for="departureAirportCode" class="form-label">From</label>
+										<input type="text" class="form-control"
+											id="departureAirportCode" name="departureAirportCode"
+											value="<%=request.getAttribute("departureAirportCode")%>"
+											placeholder="City or Airport" required
+											aria-describedby="departureError" autocomplete="off">
+										<div id="departureAutocomplete" class="autocomplete-container"></div>
+										<span id="departureError" class="error-text"
+											aria-live="polite"></span>
+									</div>
+								</div>
+								<div
+									class="col-auto d-flex align-items-center justify-content-center">
+									<button type="button"
+										class="swap-btn btn btn-outline-secondary rounded-circle"
+										aria-label="Swap departure and destination"
+										title="Swap departure and destination">
+										<i class="fas fa-exchange-alt"></i>
+									</button>
+								</div>
+								<div class="col">
+									<div class="form-group">
+										<label for="destinationAirportCode" class="form-label">To</label>
+										<input type="text" class="form-control"
+											id="destinationAirportCode" name="destinationAirportCode"
+											value="<%=request.getAttribute("destinationAirportCode")%>"
+											placeholder="City or Airport" required
+											aria-describedby="destinationError" autocomplete="off">
+										<div id="destinationAutocomplete"
+											class="autocomplete-container"></div>
+										<span id="destinationError" class="error-text"
+											aria-live="polite"></span>
+									</div>
+								</div>
+								<div class="col">
+									<div class="form-group">
+										<label for="departureDate" class="form-label">Departure</label>
+										<input type="text" class="form-control flatpickr"
+											id="departureDate" name="departureDate"
+											value="<%=request.getAttribute("departureDate")%>" required
+											aria-label="Departure Date"> <i
+											class="far fa-calendar-alt input-icon"></i>
+									</div>
+								</div>
+								<div class="col">
+									<div class="form-group">
+										<label for="returnDate" class="form-label">Return</label> <input
+											type="text" class="form-control flatpickr" id="returnDate"
+											name="returnDate" placeholder="Return date"
+											aria-label="Return Date"> <i
+											class="far fa-calendar-alt input-icon"></i>
+									</div>
+								</div>
+								<div class="col-auto search-btn-container">
+									<button type="submit" class="search-btn"
+										aria-label="Search flights">
+										<i class="fas fa-search me-2"></i> Update Search
+									</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
 			<h2 class="header-title gradient-header">Explore Your Flights</h2>
 			<form action="<%=request.getContextPath()%>/SearchFlights"
 				method="get" class="sort-form mb-3">
@@ -75,6 +153,12 @@
 								<p>
 									Max: $<span id="priceValue">2000</span>
 								</p>
+								<label for="totalDuration" class="form-label">Total
+									Duration (hours)</label> <input type="range" class="form-range"
+									id="totalDuration" min="0" max="50" value="50">
+								<p>
+									Max: <span id="durationValue">50</span> hours
+								</p>
 							</div>
 							<div class="filter-group">
 								<label class="form-label">Stops</label>
@@ -88,6 +172,33 @@
 										value="oneStop"> <label class="form-check-label"
 										for="oneStop">1 Stop</label>
 								</div>
+							</div>
+							<div class="filter-group">
+								<label class="form-label">Airlines</label>
+								<%
+								AirlineService airlineService = new AirlineService();
+								List<Airlines> airlines = airlineService.fetchAllAirlines();
+								if (airlines != null && !airlines.isEmpty()) {
+									for (Airlines airline : airlines) {
+										if (airline != null && airline.getAirlineName() != null) {
+								%>
+								<div class="form-check">
+									<input type="checkbox" class="form-check-input"
+										id="airline_<%=airline.getAirlineId()%>" name="airline"
+										value="<%=airline.getAirlineId()%>"> <label
+										class="form-check-label"
+										for="airline_<%=airline.getAirlineId()%>"> <%=airline.getAirlineName()%>
+									</label>
+								</div>
+								<%
+								}
+								}
+								} else {
+								%>
+								<p>No airlines available</p>
+								<%
+								}
+								%>
 							</div>
 						</div>
 					</aside>
@@ -118,13 +229,19 @@
 									.map(s -> s != null && s.getStopAirport() != null ? s.getStopAirport().getAirportCode() : "Unknown")
 									.filter(code -> code != null && !code.isEmpty()).collect(Collectors.joining(", ")))
 							: "Non-stop";
+							long durationHours = flightResult.getFlight().getDepartureTime() != null
+							&& flightResult.getFlight().getArrivalTime() != null
+									? Duration.between(departureInstant, arrivalInstant).toHours()
+									: 0;
 						%>
 						<div class="flight-card card"
 							data-flight-id="<%=flightResult.getFlight().getFlightId()%>"
 							data-price="<%=flightResult.getPricesAndClasses() != null && !flightResult.getPricesAndClasses().isEmpty()
 		? String.format("%.2f", flightResult.getPricesAndClasses().get(0).getDynamicPrice())
 		: "0.00"%>"
-							data-stops="<%=stops%>">
+							data-stops="<%=stops%>"
+							data-airline-id="<%=flightResult.getFlight().getAirline() != null ? flightResult.getFlight().getAirline().getAirlineId() : ""%>"
+							data-duration="<%=durationHours%>">
 							<div class="row align-items-center">
 								<div class="col-md-2 text-center airline-logo">
 									<img
@@ -217,7 +334,9 @@
 												kg carry-on
 												<%
 												} else {
-												%>No baggage info<%
+												%>
+												No baggage info
+												<%
 												}
 												%>
 											</p>
@@ -249,8 +368,6 @@
 						</div>
 						<%
 						}
-						%>
-						<%
 						}
 						%>
 					</main>
@@ -287,7 +404,8 @@
 													Depart:
 													<%=flight.getFlight().getDepartureAirport() != null
 		? flight.getFlight().getDepartureAirport().getAirportCode()
-		: "N/A"%></p>
+		: "N/A"%>
+												</p>
 												<p class="timeline-time"><%=departureTime%></p>
 												<p class="timeline-details"><%=flight.getFlight().getDepartureAirport() != null
 		? flight.getFlight().getDepartureAirport().getAirportName()
@@ -338,7 +456,8 @@
 													Arrive:
 													<%=flight.getFlight().getDestinationAirport() != null
 		? flight.getFlight().getDestinationAirport().getAirportCode()
-		: "N/A"%></p>
+		: "N/A"%>
+												</p>
 												<p class="timeline-time"><%=arrivalTime%></p>
 												<p class="timeline-details"><%=flight.getFlight().getDestinationAirport() != null
 		? flight.getFlight().getDestinationAirport().getAirportName()
@@ -376,8 +495,6 @@
 								</div>
 								<%
 								}
-								%>
-								<%
 								} else {
 								%>
 								<p>No flight selected.</p>
@@ -399,7 +516,11 @@
 	</script>
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 	<script
 		src="<%=request.getContextPath()%>/script/flightResultsOneWay.js"></script>
+
 </body>
 </html>

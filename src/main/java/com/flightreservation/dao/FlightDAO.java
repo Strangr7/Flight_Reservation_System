@@ -325,4 +325,37 @@ public class FlightDAO {
 		}
 	}
 
+	/**
+	 * Fetches the flight status based on flight number and departure date.
+	 * 
+	 * @param flightNumber  The flight number (e.g., "AA123").
+	 * @param departureDate The date of departure to filter the flight.
+	 * @return A String representing the flight status, or null if the flight is not
+	 *         found or an error occurs.
+	 */
+
+	public String fetchFlightStatus(String flightNumber, LocalDate departureDate) {
+		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+			String hql = "FROM Flights f WHERE f.flightNumber = :flightNumber "
+					+ "AND CAST(f.departureTime AS date) = :departureDate";
+
+			Query<Flights> query = session.createQuery(hql, Flights.class);
+			query.setParameter("flightNumber", flightNumber);
+			query.setParameter("departureDate", departureDate);
+
+			Flights flight = query.uniqueResult();
+			if (flight == null) {
+				logger.warn("No flight found for flightNumber={} on departureDate={}", flightNumber, departureDate);
+				return null;
+			}
+			return flight.getStatus();
+
+		} catch (Exception e) {
+			logger.error("Error fetching flight status for flightNumber={} on departureDate={}: {}", flightNumber,
+					departureDate, e.getMessage(), e);
+			return null;
+
+		}
+	}
+
 }

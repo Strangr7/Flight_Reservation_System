@@ -10,31 +10,33 @@ import java.io.IOException;
 
 @WebServlet("/view")
 public class ViewServlet extends HttpServlet {
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        String page = request.getParameter("page");
-        String dispatchPath = "/WEB-INF/views/";
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		String page = request.getParameter("page");
+		String dispatchPath = "/WEB-INF/views/";
 
-        if ("login".equals(page)) {
-            dispatchPath += "login.jsp";
-        } else if ("register".equals(page)) {
-            dispatchPath += "register.jsp";
-        } else if ("searchFlights".equals(page)) {
-            dispatchPath += "searchFlights.jsp";
-        } else if ("passengerDetails".equals(page)) {
-            dispatchPath += "passengerDetails.jsp";
-        } else if ("bookingConfirmation".equals(page)) {
-            dispatchPath += "bookingConfirmation.jsp";
-        } else if ("manageBooking".equals(page)) {
-            dispatchPath += "manageBooking.jsp";
-        } else {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Page not found");
-            return;
-        }
+		if ("login".equals(page)) {
+			dispatchPath += "login.jsp";
+		} else if ("register".equals(page)) {
+			dispatchPath += "register.jsp";
+		} else if ("searchFlights".equals(page)) {
+			dispatchPath += "searchFlights.jsp";
+		} else if ("passengerDetails".equals(page)) {
+			dispatchPath += "passengerDetails.jsp";
+		} else if ("bookingConfirmation".equals(page)) {
+			dispatchPath += "bookingConfirmation.jsp";
+		} else if ("manageBooking".equals(page)) {
+			dispatchPath += "manageBooking.jsp";
+		} else if ("adminPanel".equals(page)) { // Added
+			dispatchPath += "adminPanel.jsp";
+		} else {
+			response.sendError(HttpServletResponse.SC_NOT_FOUND, "Page not found");
+			return;
+		}
 
-        request.getRequestDispatcher(dispatchPath).forward(request, response);
-    }
+		request.getRequestDispatcher(dispatchPath).forward(request, response);
+	}
 }

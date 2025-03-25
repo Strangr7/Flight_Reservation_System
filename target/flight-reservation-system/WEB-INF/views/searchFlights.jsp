@@ -23,11 +23,44 @@
 <link rel="stylesheet"
 	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-<!-- Custom CSS -->
-<link href="<%=request.getContextPath()%>/style/searchFlights.css"
+
+<link href="<%=request.getContextPath()%>/style/base.css"
 	rel="stylesheet">
+<link href="<%=request.getContextPath()%>/style/components/form.css"
+	rel="stylesheet">
+<link href="<%=request.getContextPath()%>/style/components/buttons.css"
+	rel="stylesheet">
+<link
+	href="<%=request.getContextPath()%>/style/components/search-container.css"
+	rel="stylesheet">
+<link
+	href="<%=request.getContextPath()%>/style/components/where-to-next.css"
+	rel="stylesheet">
+
+<link
+	href="<%=request.getContextPath()%>/style/components/flatpickr.css"
+	rel="stylesheet">
+<link href="<%=request.getContextPath()%>/style/components/why-us.css"
+	rel="stylesheet">
+<link
+	href="<%=request.getContextPath()%>/style/components/never-miss-an-offer.css"
+	rel="stylesheet">
+<link href="<%=request.getContextPath()%>/style/components/navbar.css"
+	rel="stylesheet">
+<link href="<%=request.getContextPath()%>/style/components/footer.css"
+	rel="stylesheet">
+
+<link href="<%=request.getContextPath()%>/style/utilities.css"
+	rel="stylesheet">
+<link href="<%=request.getContextPath()%>/style/responsive.css"
+	rel="stylesheet">
+
+
+
 </head>
+
 <body>
+	<jsp:include page="navbar.jsp"></jsp:include>
 	<div class="container">
 		<div class="search-header">
 			<h1>Book Your Flight</h1>
@@ -35,8 +68,19 @@
 		</div>
 		<div class="search-container">
 			<div class="search-bg"></div>
+			<div class="search-nav-tabs">
+				<a href="#" class="search-nav-item active" data-tab="book-flight">
+					<i class="fas fa-plane"></i> Book a Flight
+				</a> <a href="#" class="search-nav-item" data-tab="check-in"> <i
+					class="far fa-calendar-alt"></i> Check In
+				</a> <a href="#" class="search-nav-item" data-tab="manage-bookings">
+					<i class="fas fa-map-marker-alt"></i> Manage Bookings
+				</a> <a href="#" class="search-nav-item" data-tab="flight-status"> <i
+					class="fas fa-info-circle"></i> Flight Status
+				</a>
+			</div>
 			<div class="search-content">
-				<div class="search-card">
+				<div class="search-card tab-content active" id="book-flight">
 					<form id="flightSearchForm" method="get" novalidate>
 						<div class="form-row">
 							<div class="col">
@@ -99,26 +143,70 @@
 						</div>
 					</form>
 				</div>
+				<!-- Check In Form -->
+				<div class="search-card tab-content" id="check-in">
+					<form id="checkInForm" method="post" novalidate>
+						<div class="form-row">
+							<div class="col">
+								<div class="form-group">
+									<label for="bookingReference" class="form-label">Booking
+										Reference</label> <input type="text" class="form-control"
+										id="bookingReference" name="bookingReference"
+										placeholder="Enter your booking reference" required>
+								</div>
+							</div>
+							<div class="col">
+								<div class="form-group">
+									<label for="lastName" class="form-label">Last Name</label> <input
+										type="text" class="form-control" id="lastName" name="lastName"
+										placeholder="Enter your last name" required>
+								</div>
+							</div>
+							<div class="col-auto search-btn-container">
+								<button type="submit" class="search-btn" aria-label="Check in">
+									<i class="fas fa-check me-2"></i> Check In
+								</button>
+							</div>
+						</div>
+					</form>
+				</div>
+				<!-- Flight Status Form -->
+				<div class="search-card tab-content" id="flight-status">
+					<form id="flightStatusForm" method="get" novalidate>
+						<div class="form-row">
+							<div class="col">
+								<div class="form-group">
+									<label for="flightNumber" class="form-label">Flight
+										Number</label> <input type="text" class="form-control"
+										id="flightNumber" name="flightNumber"
+										placeholder="e.g., AA123" required>
+								</div>
+							</div>
+							<div class="col">
+								<div class="form-group">
+									<label for="flightDate" class="form-label">Date</label> <input
+										type="text" class="form-control flatpickr" id="flightDate"
+										name="flightDate" required aria-label="Flight Date"> <i
+										class="far fa-calendar-alt input-icon"></i>
+								</div>
+							</div>
+							<div class="col-auto search-btn-container">
+								<button type="submit" class="search-btn"
+									aria-label="Check status">
+									<i class="fas fa-info-circle me-2"></i> Check Status
+								</button>
+							</div>
+						</div>
+					</form>
+				</div>
 			</div>
 		</div>
-		<div>
-			<div class="mt-3 d-flex justify-content-end">
-				<a class="btn btn-secondary">Check-In</a> <a
-					class="btn btn-secondary">Bookings</a>
-			</div>
-		</div>
-		<div class="">
-			<div class="">
-				<h2>Explore packages</h2>
-				<p>carousel</p>
-			</div>
-
-		</div>
+		<div></div>
 
 		<div class="where-to-next">
 			<h2 class="section-title">Where to next?</h2>
 			<div class="row mb-3" id="where-to-next-form-row">
-				<div class="col">
+				<div class="col-md-3 col-sm-6">
 					<div class="departure-input-container">
 						<label for="suggestionDepartureCode" class="form-label">From</label>
 						<input type="text" class="form-control"
@@ -142,33 +230,111 @@
 					<p class="mt-3 text-muted">Loading popular destinations...</p>
 				</div>
 			</div>
+
 		</div>
-		
-		<div class="">
-			<div class="">
-				<h2>Why us?</h2>
+		<div class="why-us">
+			<h2 class="section-title">Why Choose Us?</h2>
+			<p class="section-subtitle">Experience the difference with our
+				premium service</p>
+			<div class="why-us-cards">
+				<div class="why-us-card">
+
+					<div class="why-us-icon">
+						<i class="fas fa-dollar-sign"></i>
+					</div>
+					<h3 class="why-us-title">Best Prices</h3>
+					<p class="why-us-text">We guarantee the most competitive prices
+						for your flights.</p>
+				</div>
+				<div class="why-us-card">
+
+					<div class="why-us-icon">
+						<i class="fas fa-headset"></i>
+					</div>
+					<h3 class="why-us-title">24/7 Support</h3>
+					<p class="why-us-text">Our support team is available around the
+						clock for you.</p>
+				</div>
+				<div class="why-us-card">
+
+					<div class="why-us-icon">
+						<i class="fas fa-plane"></i>
+					</div>
+					<h3 class="why-us-title">Wide Selection</h3>
+					<p class="why-us-text">Choose from a vast network of airlines
+						and destinations.</p>
+				</div>
 			</div>
-
 		</div>
+		<div class="never-miss-offer">
+			<div class="row align-items-center">
+				<!-- Left Column: Background Image -->
+				<div class="col-md-6 never-miss-image">
+					<!-- Image will be set via CSS -->
+				</div>
+				<!-- Right Column: Subscription Form -->
+				<div class="col-md-6 never-miss-content">
+					<h2 class="section-title">Never Miss an Offer</h2>
+					<p class="section-subtitle">Subscribe and be the first to
+						receive our exclusive offers.</p>
+					<form id="subscriptionForm">
+						<div class="row mb-3">
+							<div class="col-md-6 mb-3 mb-md-0">
+								<input type="email" class="form-control" id="emailAddress"
+									name="emailAddress" placeholder="Email address">
+							</div>
 
-
+						</div>
+						<div class="form-check mb-3">
+							<input type="checkbox" class="form-check-input"
+								id="privacyConsent" name="privacyConsent"> <label
+								class="form-check-label" for="privacyConsent"> I would
+								like to get offers and news from us. I have read and understood
+								the <a href="#" class="privacy-link">privacy notice</a>.
+							</label>
+						</div>
+						<button type="submit" class="subscribe-btn">Subscribe</button>
+					</form>
+				</div>
+			</div>
+		</div>
+		<jsp:include page="footer.jsp"></jsp:include>
 	</div>
 
 	<!-- External JS Libraries -->
 	<script
-		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+		defer></script>
+	<script src="https://cdn.jsdelivr.net/npm/flatpickr" defer></script>
 
 	<!-- Pass contextPath to JS -->
 	<script>
         window.contextPath = '<%=request.getContextPath()%>';
 	</script>
 
-	<!-- Custom JS for flight search functionality -->
-	<script src="<%=request.getContextPath()%>/script/searchFlights.js"></script>
+	<!-- Core scripts -->
+	<script src="<%=request.getContextPath()%>/script/core/utilities.js"
+		defer></script>
+	<script src="<%=request.getContextPath()%>/script/core/autocomplete.js"
+		defer></script>
 	<script
-		src="<%=request.getContextPath()%>/script/suggestedDestinations.js"></script>
+		src="<%=request.getContextPath()%>/script/flightsearch/datePicker.js"
+		defer></script>
+	<script
+		src="<%=request.getContextPath()%>/script/flightsearch/formManager.js"
+		defer></script>
+	<script
+		src="<%=request.getContextPath()%>/script/flightsearch/uiUtilities.js"
+		defer></script>
+	<script
+		src="<%=request.getContextPath()%>/script/suggestedDestinations.js"
+		defer></script>
+	<script
+		src="<%=request.getContextPath()%>/script/flightsearch/searchFlights.js"
+		defer></script>
+	<script
+		src="<%=request.getContextPath()%>/script/flightsearch/searchNav.js"
+		defer></script>
 
 
 </body>
