@@ -31,14 +31,17 @@ Follow these steps to set up the project locally:
    
 2. **Set up the database**:
 - create MySQL database
-	```CREATE DATABASE <db_name>;
-- Import the schema and sample data from ```src/main/resources/db/setup.sql
-	```mysql -u <your_username> -p<password> <db_name> < src/main/resources/db/setup.sql
+	```bash
+	CREATE DATABASE <db_name>;
+- Import the schema and sample data from `src/main/resources/db/setup.sql
+	```bash
+	mysql -u <your_username> -p<password> <db_name> < src/main/resources/db/setup.sql
 3. **Configure Database Connection**:
 - Add .env file in the root directory with your database details:
-	```DB_URL=jdbc:mysql://localhost:3306/<db_name>
-	   DB_USERNAME=your_username
-       DB_PASSWORD=your_password
+	```bash
+	DB_URL=jdbc:mysql://localhost:3306/<db_name>
+	DB_USERNAME=your_username
+    DB_PASSWORD=your_password
 4. **Configure Hibernate config file**:
 - Edit src\main\resources\hibernate.cfg.xml with your database details in **Database Connection Settings**
 
