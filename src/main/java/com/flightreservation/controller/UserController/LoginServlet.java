@@ -34,6 +34,9 @@ public class LoginServlet extends HttpServlet {
             if (user != null && BCrypt.checkpw(password, user.getPassword())) {
                 HttpSession httpSession = request.getSession();
                 httpSession.setAttribute("loggedInUser", user);
+                httpSession.setAttribute("user", email); // For navbar
+                httpSession.setAttribute("role", user.getUserRoles().name()); // For navbar
+                
                 logger.info("User Logged In: {}", email);
 
                 // Check for pending booking data
@@ -72,5 +75,9 @@ public class LoginServlet extends HttpServlet {
             request.setAttribute("error", "Login failed. Please try again.");
             request.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(request, response);
         }
+    }
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.sendRedirect(request.getContextPath() + "/view?page=login");
     }
 }
