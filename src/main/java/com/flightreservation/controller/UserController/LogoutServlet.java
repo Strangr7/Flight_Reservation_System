@@ -24,8 +24,13 @@ public class LogoutServlet extends HttpServlet {
 			logger.info("User logged out: {}", session.getAttribute("loggedInUser"));
 			session.invalidate();
 		}
-		response.sendRedirect(request.getContextPath() + "/view?page=login");
+		response.sendRedirect(request.getContextPath() + "/view?page=login&success=loggedOut");
 
+	}
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		doPost(request, response); // Support GET for navbar link
 	}
 
 }
