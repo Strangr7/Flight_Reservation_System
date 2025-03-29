@@ -15,9 +15,17 @@ public class HibernateUtil {
 	private static volatile StandardServiceRegistry registry; // Keep registry as a field
 	private static final Object LOCK = new Object();
 
-	private HibernateUtil() {
-		throw new AssertionError("Utility class should not be instantiated");
-	}
+	static {
+        // Add shutdown hook to ensure proper cleanup
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            logger.info("Executing shutdown hook for Hibernate resources");
+            shutdown();
+        }));
+    }
+	/*
+	 * private HibernateUtil() { throw new
+	 * AssertionError("Utility class should not be instantiated"); }
+	 */
 
 	public static SessionFactory getSessionFactory() {
 		if (sessionFactory == null || sessionFactory.isClosed()) { // Check if null or closed
@@ -69,22 +77,23 @@ public class HibernateUtil {
 				if (sessionFactory != null && !sessionFactory.isClosed()) {
 					logger.info("Shutting down Hibernate SessionFactory...");
 					sessionFactory.close();
-					sessionFactory = null;
-					if (registry != null) {
-						StandardServiceRegistryBuilder.destroy(registry);
-						registry = null;
-						logger.info("StandardServiceRegistry destroyed.");
-					}
-					logger.info("Hibernate SessionFactory shut down.");
+//					sessionFactory = null;
 				}
+				if (registry != null) {
+					StandardServiceRegistryBuilder.destroy(registry);
+					registry = null;
+					logger.info("StandardServiceRegistry destroyed.");
+				}
+//				logger.info("Hibernate SessionFactory shut down.");
+				
 			}
 		}
 	}
 
-	public static void resetSessionFactory() {
-		shutdown();
-		initializeSessionFactory();
-		logger.info("SessionFactory reset complete.");
-	}
+//	public static void resetSessionFactory() {
+//		shutdown();
+//		initializeSessionFactory();
+//		logger.info("SessionFactory reset complete.");
+//	}
 
 }

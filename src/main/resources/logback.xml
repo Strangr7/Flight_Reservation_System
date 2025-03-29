@@ -10,7 +10,7 @@
 
     <!-- File Appender -->
     <appender name="file" class="ch.qos.logback.core.FileAppender">
-       <file>logs/app.log</file><!-- Absolute path using project base directory -->
+       <file>C:/shreejana/college_projects/Flight_Reservation_System/logs/app.log</file><!-- Absolute path using project base directory -->
     
         <append>true</append>
         <encoder>

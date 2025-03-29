@@ -1,5 +1,8 @@
 package com.flightreservation.model;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import com.flightreservation.model.enums.BookingStatus;
 
 import jakarta.persistence.Column;
@@ -11,6 +14,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
 @Entity
@@ -41,6 +45,12 @@ public class Bookings {
 	@ManyToOne
 	@JoinColumn(name = "meal_id", nullable = true)
 	private Meals meals;
+	
+	@Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt; // When the booking was made
+
+    @Column(name = "booking_date", nullable = false)
+    private LocalDate bookingDate; // Departure date of the booked flight
 
 	@Column(name = "pnr", unique = true, nullable = false)
 	private String PNR;
@@ -53,7 +63,7 @@ public class Bookings {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Bookings(int bookingId, Users users, Flights flights, Flights returnFlights, Seats seats, Meals meals, String PNR, BookingStatus bookingStatus) {
+	public Bookings(int bookingId, Users users, Flights flights, Flights returnFlights, Seats seats, Meals meals, String PNR, BookingStatus bookingStatus, LocalDate bookingDate) {
 	    this.bookingId = bookingId;
 	    this.users = users;
 	    this.flights = flights;
@@ -62,7 +72,17 @@ public class Bookings {
 	    this.meals = meals;
 	    this.PNR = PNR;
 	    this.bookingStatus = bookingStatus;
+	    this.bookingDate = bookingDate;
 	}
+	
+	@PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();  // Auto-set on creation
+        // If bookingDate isn't set, derive it from the flight
+        if (this.bookingDate == null && this.flights != null) {
+            this.bookingDate = this.flights.getDepartureTime().toLocalDate();
+        }
+    }
 
 	public int getBookingId() {
 		return bookingId;
@@ -76,9 +96,9 @@ public class Bookings {
 		return flights;
 	}
 
-public Flights getReturnFlights() {
-	return returnFlights;
-}
+	public Flights getReturnFlights() {
+		return returnFlights;
+	}
 	public Seats getSeats() {
 		return seats;
 	}
@@ -90,6 +110,14 @@ public Flights getReturnFlights() {
 	public String getPNR() {
 		return PNR;
 	}
+	
+	public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDate getBookingDate() {
+        return bookingDate;
+    }
 
 	public BookingStatus getBookingStatus() {
 		return bookingStatus;
@@ -126,5 +154,9 @@ public Flights getReturnFlights() {
 	public void setStatus(BookingStatus bookingStatus) {
 		this.bookingStatus = bookingStatus;
 	}
+	
+    public void setBookingDate(LocalDate bookingDate) {
+        this.bookingDate = bookingDate;
+    }
 
 }

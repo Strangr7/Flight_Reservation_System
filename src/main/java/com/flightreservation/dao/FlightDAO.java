@@ -357,5 +357,77 @@ public class FlightDAO {
 
 		}
 	}
+	
+	public long countActiveFlights() {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            LocalDate today = LocalDate.now();
+            Query<Long> query = session.createQuery(
+                "SELECT COUNT(f) FROM Flights f WHERE DATE(f.departureTime) = :today", 
+                Long.class
+            );
+            query.setParameter("today", today);
+            return query.uniqueResult();
+        } catch (Exception e) {
+            logger.error("Error counting active flights", e);
+            return 0;
+        }
+    }
+	
+	public double getOnTimePercentage() {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            LocalDate today = LocalDate.now();
+            
+            // Count total flights today
+            Query<Long> totalQuery = session.createQuery(
+                "SELECT COUNT(f) FROM Flights f WHERE DATE(f.departureTime) = :today", 
+                Long.class
+            );
+            totalQuery.setParameter("today", today);
+            long total = totalQuery.uniqueResult();
+            
+            if (total == 0) return 100.0; // Avoid division by zero
+            
+            // Count on-time flights
+            Query<Long> onTimeQuery = session.createQuery(
+                "SELECT COUNT(f) FROM Flights f WHERE DATE(f.departureTime) = :today AND f.status = 'ON_TIME'", 
+                Long.class
+            );
+            onTimeQuery.setParameter("today", today);
+            long onTime = onTimeQuery.uniqueResult();
+            
+            return (onTime * 100.0) / total;
+        } catch (Exception e) {
+            logger.error("Error calculating on-time percentage", e);
+            return 0.0;
+        }
+    }
+	
+	public double getOccupancyRate() {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        	// Get total available seats for today's flights
+            String seatsHql = "SELECT SUM(a.seatingCapacity) " +
+                            "FROM Flights f " +
+                            "JOIN f.aircraft a " +
+                            "WHERE DATE(f.departureTime) = CURRENT_DATE";
+            Query<Long> seatsQuery = session.createQuery(seatsHql, Long.class);
+            Long totalSeats = seatsQuery.uniqueResult();
+            
+            if (totalSeats == null || totalSeats == 0) {
+                return 0.0; // Prevent division by zero
+            }
+            
+            // Get number of bookings for today's flights
+            String bookingsHql = "SELECT COUNT(b) " +
+                               "FROM Bookings b " +
+                               "WHERE DATE(b.flights.departureTime) = CURRENT_DATE";
+            Query<Long> bookingsQuery = session.createQuery(bookingsHql, Long.class);
+            Long bookedSeats = bookingsQuery.uniqueResult();
+            
+            return (bookedSeats * 100.0) / totalSeats;
+        } catch (Exception e) {
+            logger.error("Error calculating occupancy rate", e);
+            return 0.0;
+        }
+    }
 
 }

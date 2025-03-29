@@ -6,6 +6,9 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Map;
+
+import com.flightreservation.service.DashboardService;
 
 /**
  * Servlet implementation class AdminPanel
@@ -13,6 +16,7 @@ import java.io.IOException;
 @WebServlet("/adminPanel")
 public class AdminPanel extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private final DashboardService dashboardService = new DashboardService();
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -35,6 +39,10 @@ public class AdminPanel extends HttpServlet {
 			return;
 
 		}
+//		Get dashboard metrics
+        Map<String, Object> metrics = dashboardService.getDashboardMetrics();
+        request.setAttribute("metrics", metrics);
+
 		request.getRequestDispatcher("/WEB-INF/views/adminPanel.jsp").forward(request, response);
 	}
 

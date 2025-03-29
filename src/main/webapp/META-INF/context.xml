@@ -1,0 +1,8 @@
+<Context>
+    <!-- Disable session persistence to disk -->
+    <Manager pathname="" />
+    
+    <!-- Prevent auto-reload -->
+    <JarScanner scanManifest="false"/>
+    <WatchedResource>WEB-INF/web.xml</WatchedResource>
+</Context>
