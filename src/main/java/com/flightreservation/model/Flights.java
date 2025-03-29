@@ -1,6 +1,7 @@
 package com.flightreservation.model;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -221,5 +222,10 @@ public class Flights  {
                 ", stopCount=" + stopCount +
                 ", stops="+
                 '}';
+    }
+    public String getFormattedDepartureTime() {
+        if(this.departureTime == null) return "N/A";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm");
+        return departureTime.format(formatter);
     }
 }

@@ -27,6 +27,9 @@ import com.flightreservation.model.enums.FlightClasses;
 
 import com.flightreservation.util.HibernateUtil;
 
+import jakarta.transaction.SystemException;
+import jakarta.transaction.Transaction;
+
 public class FlightDAO {
 
 	private static final Logger logger = LoggerFactory.getLogger(FlightDAO.class);
@@ -46,6 +49,7 @@ public class FlightDAO {
 			String hql = "SELECT br,s From Baggagerules JOIN br.flight f JOIN Seats s  ON s.flight = f WHERE f.flightId = :flightId";
 			Query<Flights> query = session.createQuery(hql, Flights.class);
 			query.setParameter("flightId", flightId);
+			System.out.println("----------------------From dao: " + query.list());
 			return query.uniqueResult(); // Fetch the flight directly using its ID; maps to the Flights table
 
 		} catch (Exception e) {
@@ -427,6 +431,105 @@ public class FlightDAO {
         } catch (Exception e) {
             logger.error("Error calculating occupancy rate", e);
             return 0.0;
+        }
+    }
+
+	public boolean createFlight(Flights flight) {
+		
+		org.hibernate.Transaction transaction = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        	
+            transaction = session.beginTransaction();
+            session.save(flight);
+            transaction.commit();
+            return true;
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+            return false;
+        }
+	}
+	
+
+    public List<Flights> getPaginatedFlights(int offset, int limit) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Query<Flights> query = session.createQuery("FROM Flights", Flights.class);
+            query.setFirstResult(offset);
+            query.setMaxResults(limit);
+            
+            return query.list();
+        }
+    }
+
+    public int getTotalFlightCount() {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Query<Long> query = session.createQuery("SELECT COUNT(*) FROM Flights", Long.class);
+            return query.uniqueResult().intValue();
+        }
+    }
+    
+    public Flights getFlightById(int flightId) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            
+            String hql = "SELECT DISTINCT f FROM Flights f "
+                       + "LEFT JOIN FETCH f.airline "
+                       + "LEFT JOIN FETCH f.departureAirport "
+                       + "LEFT JOIN FETCH f.destinationAirport "
+                       + "LEFT JOIN FETCH f.aircraft "
+                       + "WHERE f.flightId = :flightId";
+            
+            return session.createQuery(hql, Flights.class)
+                        .setParameter("flightId", flightId)
+                        .uniqueResult();
+        } catch (Exception e) {
+            logger.error("Error fetching flight by ID {}: {}", flightId, e.getMessage(), e);
+            return null;
+        }
+    }
+    
+ // Update
+    public boolean updateFlight(Flights flight) {
+    	
+        org.hibernate.Transaction transaction = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+            session.update(flight);
+            transaction.commit();
+            return true;
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+ // Delete
+    public boolean deleteFlight(int flightId) {
+    	System.out.println("0000000000000000 to delete the data");
+    	org.hibernate.Transaction transaction = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+            Flights flight = session.get(Flights.class, flightId);
+            if (flight != null) {
+                session.delete(flight);
+            }
+            transaction.commit();
+            return true;
+        } catch (Exception e) {
+            if (transaction != null) {
+                try {
+					transaction.rollback();
+				} catch (IllegalStateException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+            }
+            e.printStackTrace();
+            return false;
         }
     }
 

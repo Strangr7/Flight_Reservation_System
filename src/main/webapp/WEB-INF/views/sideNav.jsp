@@ -3,22 +3,34 @@
 <%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 
 <%-- Detect current page --%>
-<c:set var="currentPage" value="${fn:substringAfter(pageContext.request.requestURI, '/')}" />
+
+<c:set var="currentPath" value="${fn:replace(pageContext.request.requestURI, pageContext.request.contextPath, '')}" />
+<c:set var="basePath" value="${fn:split(currentPath, '/')[2]}" />
+<c:set var="withoutExtension" value="${fn:split(basePath, '.')[0]}" />
+
+
+
+<!-- DEBUG: 
+  RequestURI = ${pageContext.request.requestURI}
+  ContextPath = ${pageContext.request.contextPath}
+  CurrentPath = ${currentPath}
+  withoutExtension = ${withoutExtension}
+-->
 <div class="sidenav d-flex flex-column flex-shrink-0 p-3 text-white" style="width: 280px; height: 100vh;">
 
     <!-- Main Menu -->
     <ul class="nav nav-pills flex-column mb-auto">
         <!-- Dashboard -->
-        <li class="nav-item ${fn:contains(currentPage, 'adminPanel') ? 'active' : ''}">
-            <a href="admin?page=adminPanel" class="nav-link ${param.page == 'adminPanel' ? 'active' : ''}">
+        <li class="nav-item  ${withoutExtension eq 'adminPanel' ? 'active' : ''}">
+            <a href="<c:url value='/adminPanel'/>" class="nav-link">
                 <i class="bi bi-speedometer2 me-2"></i>
                 Dashboard
             </a>
         </li>
 
-        <!-- Flight Management -->
-        <li class="nav-item ${fn:contains(currentPage, 'flights') ? 'active' : ''}">
-            <a href="admin?page=flights" class="nav-link ${param.page == 'flights' ? 'active' : ''}">
+        <!-- Flight Management -->        
+        <li class="nav-item ${withoutExtension eq 'flights' ? 'active' : ''}">
+            <a href="<c:url value='/flights'/>" class="nav-link ">
                 <i class="bi bi-airplane me-2"></i>
                 Flights
             </a>
@@ -26,7 +38,7 @@
 
         <!-- Booking Management -->
         <li>
-            <a href="admin?page=bookings" class="nav-link ${param.page == 'bookings' ? 'active' : ''}">
+            <a href="admin?page=bookings" class="nav-link ">
                 <i class="bi bi-ticket-perforated me-2"></i>
                 Bookings
             </a>
@@ -34,7 +46,7 @@
 
         <!-- Airport Management -->
         <li>
-            <a href="admin?page=airports" class="nav-link ${param.page == 'airports' ? 'active' : ''}">
+            <a href="admin?page=airports" class="nav-link ">
                 <i class="bi bi-geo-alt me-2"></i>
                 Airports
             </a>
@@ -57,33 +69,6 @@
         </li>
     </ul>
     <hr>
-
-    <!-- Secondary Menu -->
-    <ul class="nav nav-pills flex-column">
-        <!-- Reports -->
-        <li>
-            <a href="admin?page=reports" class="nav-link ${param.page == 'reports' ? 'active' : ''}">
-                <i class="bi bi-graph-up me-2"></i>
-                Reports
-            </a>
-        </li>
-
-        <!-- Settings -->
-        <li>
-            <a href="admin?page=settings" class="nav-link ${param.page == 'settings' ? 'active' : ''}">
-                <i class="bi bi-gear me-2"></i>
-                Settings
-            </a>
-        </li>
-
-        <!-- Support -->
-        <li>
-            <a href="admin?page=support" class="nav-link ${param.page == 'support' ? 'active' : ''}">
-                <i class="bi bi-question-circle me-2"></i>
-                Support
-            </a>
-        </li>
-    </ul>
 
 </div>
 

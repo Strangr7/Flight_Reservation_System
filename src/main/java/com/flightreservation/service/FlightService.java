@@ -177,5 +177,34 @@ public class FlightService {
 
 		return status;
 	}
+	
+	public boolean createFlight(Flights flight) {
+	    // Implementation to create flight in database
+	    return flightDAO.createFlight(flight);
+	}
+	
+	public Flights getFlightById(int flightID) {
+		// Simply pass the request to the DAO layer and return the result
+		return flightDAO.getFlightById(flightID);
+	}
+
+	public boolean updateFlight(Flights flight) {
+	    // Implementation to update flight in database
+	    return flightDAO.updateFlight(flight);
+	}
+
+	public boolean deleteFlight(int flightId) {
+	    // Implementation to delete flight from database
+	    return flightDAO.deleteFlight(flightId);
+	}
+	
+	public List<Flights> getPaginatedFlights(int page, int size) {
+	    int offset = (page - 1) * size;
+	    return flightDAO.getPaginatedFlights(offset, size);
+	}
+
+	public int getTotalFlightCount() {
+	    return flightDAO.getTotalFlightCount();
+	}
 
 }

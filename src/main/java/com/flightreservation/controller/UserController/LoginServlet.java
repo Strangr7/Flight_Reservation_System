@@ -38,14 +38,12 @@ public class LoginServlet extends HttpServlet {
                 httpSession.setAttribute("role", user.getUserRoles().name()); // For navbar
                 
                 logger.info("User Logged In: {}", email);
-//              System.out.println(user.getUserRoles().name());
-//              System.out.println("=========================here========================");
               
-           // Check if user is admin
-              if ("ADMIN".equalsIgnoreCase(user.getUserRoles().name())) {
-                  response.sendRedirect(request.getContextPath() + "/adminPanel");
-                  return;
-              }
+	           // Check if user is admin
+                if ("ADMIN".equalsIgnoreCase(user.getUserRoles().name())) {
+                    response.sendRedirect(request.getContextPath() + "/adminPanel");
+                    return;
+                }
                 
                 // Check for pending booking data
                 if (httpSession.getAttribute("pendingFlight") != null) {
