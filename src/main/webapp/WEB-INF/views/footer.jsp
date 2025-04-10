@@ -1,6 +1,6 @@
 
 <footer class="premium-footer ">
-	<div class="footer-container">
+	<div class="container">
 		<div class="footer-grid">
 			<div>
 				<div class="footer-brand">
@@ -58,8 +58,7 @@
 		<div class="footer-divider"></div>
 
 		<div class="footer-bottom">
-			<p class="footer-copyright">© 2025 SkyReserve. All Rights
-				Reserved.</p>
+			<p class="footer-copyright">© 2025 SkyReserve. All Rights Reserved.</p>
 		</div>
 	</div>
 </footer>
