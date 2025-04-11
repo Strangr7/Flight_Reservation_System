@@ -16,7 +16,7 @@
   CurrentPath = ${currentPath}
   withoutExtension = ${withoutExtension}
 -->
-<div class="sidenav d-flex flex-column flex-shrink-0 p-3 text-white" style="width: 280px; height: 100vh;">
+<div class="sidenav d-flex flex-column flex-shrink-0 p-3 text-white" style="width: 280px; min-height: 100vh;">
 
     <!-- Main Menu -->
     <ul class="nav nav-pills flex-column mb-auto">
@@ -37,8 +37,8 @@
         </li>
 
         <!-- Booking Management -->
-        <li>
-            <a href="admin?page=bookings" class="nav-link ">
+        <li class="nav-item ${withoutExtension eq 'bookings' ? 'active' : ''}">
+            <a href="<c:url value='/bookings'/>" class="nav-link ">
                 <i class="bi bi-ticket-perforated me-2"></i>
                 Bookings
             </a>
@@ -57,14 +57,6 @@
             <a href="admin?page=users" class="nav-link ${param.page == 'users' ? 'active' : ''}">
                 <i class="bi bi-people me-2"></i>
                 Users
-            </a>
-        </li>
-
-        <!-- Aircraft Management -->
-        <li>
-            <a href="admin?page=aircrafts" class="nav-link ${param.page == 'aircrafts' ? 'active' : ''}">
-                <i class="bi bi-jet me-2"></i>
-                Aircrafts
             </a>
         </li>
     </ul>

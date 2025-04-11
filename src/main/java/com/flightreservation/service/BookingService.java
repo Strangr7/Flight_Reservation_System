@@ -2,6 +2,7 @@ package com.flightreservation.service;
 
 import java.util.List;
 import com.flightreservation.dao.BookingDAO;
+import com.flightreservation.model.BookingSearchCriteria;
 import com.flightreservation.model.Bookings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,5 +20,19 @@ public class BookingService {
             logger.error("Service error fetching bookings for userId: {}", userId, e);
             return List.of();
         }
+    }
+    
+    
+    public List<Bookings> searchBookings(BookingSearchCriteria criteria, int page, int size) {
+        int offset = (page - 1) * size;
+        return bookingDAO.searchBookings(criteria, offset, size);
+    }
+
+    public int getFilteredBookingCount(BookingSearchCriteria criteria) {
+        return bookingDAO.getFilteredBookingCount(criteria);
+    }
+
+    public Bookings getBookingById(int id) {
+        return bookingDAO.getBookingById(id);
     }
 }

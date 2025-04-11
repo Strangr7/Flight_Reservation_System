@@ -74,15 +74,26 @@ public class FlightServlet extends HttpServlet {
             throws Exception {
         int page = getIntParameter(request, "page", DEFAULT_PAGE);
         int size = getIntParameter(request, "size", DEFAULT_PAGE_SIZE);
-
-        List<Flights> flights = flightService.getPaginatedFlights(page, size);
-        int totalFlights = flightService.getTotalFlightCount();
+        
+     // Get search/filter parameters
+        String searchQuery = request.getParameter("searchQuery");
+        String statusFilter = request.getParameter("statusFilter");
+        String dateFilter = request.getParameter("dateFilter");
+        
+        List<Flights> flights = flightService.getPaginatedFlights(page, size, searchQuery, statusFilter, dateFilter);
+        int totalFlights = flightService.getFilteredFlightCount(searchQuery, statusFilter, dateFilter);
         int totalPages = (int) Math.ceil((double) totalFlights / size);
         
         request.setAttribute("flights", flights);
         request.setAttribute("currentPage", page);
         request.setAttribute("pageSize", size);
         request.setAttribute("totalPages", totalPages);
+        request.setAttribute("totalItems", totalFlights);
+        
+     // Pass back the filter parameters to maintain them in the view
+        request.setAttribute("searchQuery", searchQuery);
+        request.setAttribute("statusFilter", statusFilter);
+        request.setAttribute("dateFilter", dateFilter);
 
         forwardToView(request, response, "/WEB-INF/views/flights/list.jsp");
     }

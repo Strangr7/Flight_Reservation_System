@@ -2,6 +2,8 @@ package com.flightreservation.model;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.flightreservation.model.enums.BookingStatus;
 
@@ -14,6 +16,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
@@ -59,11 +62,14 @@ public class Bookings {
 	@Enumerated(EnumType.STRING)
 	private BookingStatus bookingStatus;
 	
+	@OneToMany(mappedBy = "bookings")
+	private List<Passengers> passengers;
+	
 	public Bookings() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Bookings(int bookingId, Users users, Flights flights, Flights returnFlights, Seats seats, Meals meals, String PNR, BookingStatus bookingStatus, LocalDate bookingDate) {
+	public Bookings(int bookingId, Users users, Flights flights, Flights returnFlights, Seats seats, Meals meals, String PNR, BookingStatus bookingStatus, LocalDate bookingDate, Passengers passengers) {
 	    this.bookingId = bookingId;
 	    this.users = users;
 	    this.flights = flights;
@@ -73,6 +79,7 @@ public class Bookings {
 	    this.PNR = PNR;
 	    this.bookingStatus = bookingStatus;
 	    this.bookingDate = bookingDate;
+	    this.passengers = new ArrayList<>();
 	}
 	
 	@PrePersist
@@ -123,6 +130,10 @@ public class Bookings {
 		return bookingStatus;
 	}
 
+    public List<Passengers> getPassengers() {
+        return passengers;
+    }
+
 	public void setBookingId(int bookingId) {
 		this.bookingId = bookingId;
 	}
@@ -159,4 +170,7 @@ public class Bookings {
         this.bookingDate = bookingDate;
     }
 
+    public void setPassengers(List<Passengers> passengers) {
+        this.passengers = passengers;
+    }
 }

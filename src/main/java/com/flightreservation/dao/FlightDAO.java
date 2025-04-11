@@ -453,13 +453,73 @@ public class FlightDAO {
 	}
 	
 
-    public List<Flights> getPaginatedFlights(int offset, int limit) {
+    public List<Flights> getPaginatedFlights(int offset, int limit, String searchQuery, String statusFilter, String dateFilter) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Query<Flights> query = session.createQuery("FROM Flights", Flights.class);
+        	StringBuilder hql = new StringBuilder("SELECT DISTINCT f FROM Flights f " +
+                    "LEFT JOIN FETCH f.airline " +
+                    "LEFT JOIN FETCH f.departureAirport " +
+                    "LEFT JOIN FETCH f.destinationAirport " +
+                    "LEFT JOIN FETCH f.aircraft WHERE 1=1");
+            
+            Map<String, Object> parameters = new HashMap<>();
+            
+            if (searchQuery != null && !searchQuery.isEmpty()) {
+                hql.append(" AND f.flightNumber LIKE :searchQuery");
+                parameters.put("searchQuery", "%" + searchQuery + "%");
+            }
+            
+            if (statusFilter != null && !statusFilter.isEmpty()) {
+                hql.append(" AND f.status = :statusFilter");
+                parameters.put("statusFilter", statusFilter);
+            }
+            if (dateFilter != null && !dateFilter.isEmpty()) {
+                hql.append(" AND DATE(f.departureTime) = :dateFilter");
+                parameters.put("dateFilter", LocalDate.parse(dateFilter));
+            }
+            
+            Query<Flights> query = session.createQuery(hql.toString(), Flights.class);
+            
+            // Set all parameters
+            for (Map.Entry<String, Object> entry : parameters.entrySet()) {
+                query.setParameter(entry.getKey(), entry.getValue());
+            }
+            
             query.setFirstResult(offset);
             query.setMaxResults(limit);
             
             return query.list();
+        }
+    }
+    
+    public int getFilteredFlightCount(String searchQuery, String statusFilter, String dateFilter) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            StringBuilder hql = new StringBuilder("SELECT COUNT(DISTINCT f) FROM Flights f WHERE 1=1");
+            
+            Map<String, Object> parameters = new HashMap<>();
+            
+            if (searchQuery != null && !searchQuery.isEmpty()) {
+                hql.append(" AND f.flightNumber LIKE :searchQuery");
+                parameters.put("searchQuery", "%" + searchQuery + "%");
+            }
+            
+            if (statusFilter != null && !statusFilter.isEmpty()) {
+                hql.append(" AND f.status = :statusFilter");
+                parameters.put("statusFilter", statusFilter);
+            }
+            
+            if (dateFilter != null && !dateFilter.isEmpty()) {
+                hql.append(" AND DATE(f.departureTime) = :dateFilter");
+                parameters.put("dateFilter", LocalDate.parse(dateFilter));
+            }
+            
+            Query<Long> query = session.createQuery(hql.toString(), Long.class);
+            
+            // Set all parameters
+            for (Map.Entry<String, Object> entry : parameters.entrySet()) {
+                query.setParameter(entry.getKey(), entry.getValue());
+            }
+            
+            return query.uniqueResult().intValue();
         }
     }
 

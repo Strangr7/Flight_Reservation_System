@@ -198,11 +198,15 @@ public class FlightService {
 	    return flightDAO.deleteFlight(flightId);
 	}
 	
-	public List<Flights> getPaginatedFlights(int page, int size) {
+	public List<Flights> getPaginatedFlights(int page, int size, String searchQuery, String statusFilter, String dateFilter) {
 	    int offset = (page - 1) * size;
-	    return flightDAO.getPaginatedFlights(offset, size);
+	    return flightDAO.getPaginatedFlights(offset, size, searchQuery, statusFilter, dateFilter);
 	}
 
+	public int getFilteredFlightCount(String searchQuery, String statusFilter, String dateFilter) {
+		return flightDAO.getFilteredFlightCount(searchQuery, statusFilter, dateFilter);
+	}
+	
 	public int getTotalFlightCount() {
 	    return flightDAO.getTotalFlightCount();
 	}
