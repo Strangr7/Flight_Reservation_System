@@ -10,6 +10,12 @@
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
 	rel="stylesheet">
+	<link href="<%=request.getContextPath()%>/style/base.css"
+	rel="stylesheet">
+<link href="<%=request.getContextPath()%>/style/components/form.css"
+	rel="stylesheet">
+<link href="<%=request.getContextPath()%>/style/components/buttons.css"
+	rel="stylesheet">
 </head>
 <body>
 	<jsp:include page="navbar.jsp" />
@@ -245,6 +251,7 @@
 			</div>
 		</div>
 	</div>
+	<jsp:include page="footer.jsp"></jsp:include>
 
 	<!-- JavaScript Libraries -->
 	<script
