@@ -46,7 +46,25 @@ public class BookingServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		
+		String path = request.getPathInfo();
+        System.out.println("path: " + path);
+		try {
+            if (path == null || path.equals("/")) {
+                listBookings(request, response);
+            } else if (path.equals("/detail")) {
+                showDetailBooking(request, response);
+            } else {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            }
+        } catch (Exception e) {
+            logger.severe("Operation failed" + ": " + e.getMessage());
+            request.setAttribute("errorDetail", e.getMessage());
+            forwardToView(request, response, "/WEB-INF/views/error.jsp");
+        }
+	}
+	
+	private void listBookings(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
 		try {
 			int page = getIntParameter(request, "page", DEFAULT_PAGE);
 	        int size = getIntParameter(request, "size", DEFAULT_PAGE_SIZE);
@@ -85,6 +103,20 @@ public class BookingServlet extends HttpServlet {
 		}
         catch (Exception e) {
             request.setAttribute("error", "An error occurred while processing your request");
+            forwardToView(request, response, "/WEB-INF/views/error.jsp");
+        }
+	}
+	
+	private void showDetailBooking(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+		int bookingId = Integer.parseInt(request.getParameter("id"));
+        Bookings booking = bookingService.getBookingById(bookingId);
+        
+        if (booking != null) {
+            request.setAttribute("booking", booking);
+            forwardToView(request, response, "/WEB-INF/views/bookings/detail.jsp");
+        } else {
+        	request.setAttribute("error", "An error occurred while processing your request");
             forwardToView(request, response, "/WEB-INF/views/error.jsp");
         }
 	}

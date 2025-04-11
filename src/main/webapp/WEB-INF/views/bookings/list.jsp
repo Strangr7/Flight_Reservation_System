@@ -122,10 +122,10 @@
                                         </td>
                                         <td class="text-end">
                                             <div class="btn-group" role="group">
-                                                <button class="btn btn-sm btn-outline-primary view-details"
-                                                        data-booking-id="${booking.bookingId}">
-                                                    <i class="bi bi-eye"></i> View
-                                                </button>
+                                                <a href="${pageContext.request.contextPath}/bookings/detail?id=${booking.bookingId}" 
+										           class="btn btn-sm btn-outline-primary">
+										            <i class="bi bi-eye"></i> View
+										        </a>
                                                 <%-- <a href="bookings/edit?id=${booking.bookingId}" 
                                                    class="btn btn-sm btn-outline-secondary">
                                                     <i class="bi bi-pencil"></i>
